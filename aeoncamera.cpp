@@ -1,4 +1,4 @@
-// Includes
+// Includes stuff
 
 // Internal Variables (Not exposed in header)
 glm::mat4 ViewMatrix;           // View Matrix
