@@ -22,6 +22,8 @@ void aeonSetFSAA(int aavalue);
 // Enable or Disable window resizing
 void aeonSetResizable(bool canResize);
 
+void aeonEnableFaceCulling();
+
 // Initalize underlying API's
 bool aeonAPIInit();
 

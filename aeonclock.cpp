@@ -1,4 +1,0 @@
-﻿double getCurrentTime()
-{
-    return glfwGetTime();
-}

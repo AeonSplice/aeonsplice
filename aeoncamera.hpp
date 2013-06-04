@@ -1,4 +1,5 @@
 // Includes stuff
+#include "aeoncamera.hpp"
 
 // Internal Variables (Not exposed in header)
 glm::mat4 ViewMatrix;           // View Matrix

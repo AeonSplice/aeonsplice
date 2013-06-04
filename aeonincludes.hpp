@@ -1,6 +1,6 @@
 // Standard Includes
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+#include <string>
 
 // OpenGL Includes
 #include <GL/glew.h>
@@ -8,5 +8,5 @@
 #include <glm/glm.hpp>
 
 // Engine Includes
-#include "aeonwindow.hpp"
+//#include "aeonwindow.hpp"
 //#include "AeonKeyboard.hpp"

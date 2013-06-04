@@ -1,20 +1,28 @@
 #include "AeonIncludes.hpp"
+using namespace std;
+
+void init();
+void load();
+bool isRunning();
+void render();
+void cleanUp();
 
 int main(int argc, char *argv[])
 {
-	init();
-    load();
+	//init();
+    //load();
+    cout << "Test!" << endl;
 	while(isRunning())
 	{
 		render();
 	}
-	cleanUp();
+	//cleanUp();
 	return 0; // Everything ran and didn't throw an error, return 0 (successful)
 }
 
 void render()
 {
-    computeCameraMatrices();
+    //computeCameraMatrices();
     //skybox.render();
 }
 
@@ -26,7 +34,7 @@ void load()
     */
 }
 
-void init()
+/*void init()
 {
 	// Initialise GLFW (OpenGL), and any other API's (OpenAL?)
 	if( !aeonAPIInit() )
@@ -57,9 +65,9 @@ void init()
 		return -1;
 	}
     
-    setWindowTitle("Aeon Splice Alpha");
+    aeonSetWindowTitle("Aeon Splice Alpha");
     glfwEnable(GLFW_STICKY_KEYS);
-	windowHandle.centerMouse();
+	aeonCenterMouse();
 
 	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -70,8 +78,18 @@ void init()
 	glDepthFunc(GL_LESS); 
 
 	// Cull triangles which normal is not towards the camera
-	windowEnableCulling();
+	aeonEnableFaceCulling();
     
     // Init camera with default settings
-    initCamera();
+    //initCamera();
+}*/
+
+void cleanUp()
+{
+    //aeonAPITerminate();
+}
+
+bool isRunning()
+{
+    return false;
 }

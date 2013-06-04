@@ -1,3 +1,4 @@
+#include <string>
 #include <GL/glfw.h>
 #include "aeonwindow.hpp"
 
@@ -30,18 +31,23 @@ void aeonSetResizable(bool canResize)
     }
 }
 
-void getWindowResolution(int x*,int y*)
+/*void aeonGetWindowResolution(int &x,int &y)
 {
-	glfwGetWindowResolution(&x,&y); // IS THIS HERP DERPED? Double check later
-}
+	glfwGetWindowResolution(x,y); // IS THIS HERP DERPED? Double check later
+}*/
 
-void setGLVersion(int major, int minor)
+void aeonSetGLVersion(int major, int minor)
 {
 	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, major);
 	glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, minor);
 }
 
-bool openWindow()
+void aeonEnableFaceCulling()
+{
+    glEnable(GL_CULL_FACE);
+}
+
+bool aeonOpenWindow()
 {
 	GLFWvidmode desktop;
 	glfwGetDesktopMode(&desktop);
@@ -50,7 +56,7 @@ bool openWindow()
 	return glfwOpenWindow(desktop.Width, desktop.Height, desktop.RedBits, desktop.GreenBits,desktop.BlueBits, 8, 32, 8, GLFW_FULLSCREEN);
 }
 
-bool openWindow(int width, int height, bool fullscreen)
+bool aeonOpenWindow(int width, int height, bool fullscreen)
 {
 	aeonWidth=width;
 	aeonHeight=height;
@@ -66,7 +72,7 @@ bool openWindow(int width, int height, bool fullscreen)
 	}
 }
 
-bool openWindow(int width, int height, int redBits, int greenBits, int blueBits, int alphaBits, int depthBits, int stencilBits, bool fullscreen)
+bool aeonOpenWindow(int width, int height, int redBits, int greenBits, int blueBits, int alphaBits, int depthBits, int stencilBits, bool fullscreen)
 {
 	aeonWidth=width;
 	aeonHeight=height;
@@ -80,7 +86,7 @@ bool openWindow(int width, int height, int redBits, int greenBits, int blueBits,
 	}
 }
 
-void centerMouse()
+void aeonCenterMouse()
 {
 	glfwSetMousePos(aeonWidth/2,aeonHeight/2);
 }
