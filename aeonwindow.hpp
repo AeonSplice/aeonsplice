@@ -1,47 +1,21 @@
 #ifndef _AEONWINDOW_
 #define _AEONWINDOW_
-// Get window Width
-int aeonWindowWidth();
-// Get window Height
-int aeonWindowHeight();
 
-// Set the title of the window
-void aeonSetWindowTitle(std::string title)
-{
-	glfwSetWindowTitle(title.c_str());
-}
+GLFWwindow* aeonWindowHandle;
 
-void aeonSetWindowHint(int target,int hint)
-{
-	glfwOpenWindowHint(target,hint);
-}
-
-// Set Anti-Aliasing Sampling
-void aeonSetFSAA(int aavalue);
-
-// Enable or Disable window resizing
-void aeonSetResizable(bool canResize);
-
-void aeonEnableFaceCulling();
-
-// Initalize underlying API's
 bool aeonAPIInit();
-
-// Terminate underlying API's
 void aeonAPITerminate();
 
-// Force OpenGL to use specific version
-void aeonSetGLVersion(int major,int minor);
+void aeonSetGLVersion(int,int);
+void aeonSetFSAA(int);
+void aeonSetResizable(bool);
+void aeonSetWindowHint(int,int);
 
-// Open fullscreen window at desktop resolution
-bool aeonOpenWindow();
+bool aeonOpenWindow(string title);
+bool aeonOpenWindow(string title,int width,int height,bool fullscreen);
 
-// Open window with given resolution (true = fullscreen | false = windowed)
-bool aeonOpenWindow(int width,int height,bool fullscreen);
+bool aeonSetWindowTitle(string);    // REtitles the main window
+void aeonCenterMouse();             // Centers the underlying mouse only
+void aeonCenterMouseCursor();       // Centers both the underlying mouse AND the displayed mouse
 
-// Open window with specific parameters. (resolution, bit depths, and fullscreen mode)
-bool aeonOpenWindow(int width, int height, int redBits, int greenBits, int blueBits, int alphaBits, int depthBits, int stencilBits, bool fullscreen);
-
-// (re)center the mouse
-void aeonCenterMouse();
 #endif

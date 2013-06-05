@@ -54,8 +54,6 @@ bool init()
     aeonSetGLVersion(4,3);
     // Set anti-aliasing to 4 samples.
     aeonSetFSAA(4);
-    // ??? idk Figure out what this does, and why; then abstract it or remove it
-    aeonSetWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     // Disable resizing the window. (Prevent user from breaking stuff)
 	aeonSetResizable(false);
     
@@ -90,11 +88,12 @@ bool init()
     
     // Init camera with default settings
     //initCamera();
-}*/
+    return true;
+}
 
 void cleanUp()
 {
-    //aeonAPITerminate();
+    aeonAPITerminate();
 }
 
 bool isRunning()
