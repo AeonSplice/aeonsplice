@@ -1,7 +1,7 @@
 #include "AeonIncludes.hpp"
 using namespace std;
 
-void init();
+bool init();
 void load();
 bool isRunning();
 void render();
@@ -9,44 +9,52 @@ void cleanUp();
 
 int main(int argc, char *argv[])
 {
-	//init();
-    //load();
-    cout << "Test!" << endl;
+    // Initilizes underlying API's and retrieves the configuration file
+    cout << "Initilizing..." << endl;
+    if(!init())
+    {
+        cleanUp();
+        return -1;
+    }
+    // Loads the assets required at startup (intro animation, main menu textures, first rendering objects, etc)
+    cout << "Loading assets..." << endl;
+    load();
+    // Run the main game loop
+    cout << "Running..." << endl;
 	while(isRunning())
 	{
+        // Should render current context (main menu, etc)
 		render();
 	}
-	//cleanUp();
-	return 0; // Everything ran and didn't throw an error, return 0 (successful)
+    // Terminates underlying APIs and releases all memory
+	cleanUp();
+    // Everything ran and didn't throw an error, return 0 (successful)
+	return 0;
 }
 
 void render()
 {
-    //computeCameraMatrices();
-    //skybox.render();
+    
 }
 
 void load()
 {
-    /*
-    AeonSkybox* skybox = new AeonSkybox;
-    skybox.load("./skybox/sky_",".tga");
-    */
+    // Probably going to implement loading functions for each rendering context, and call the first few loading functions in here
 }
 
-/*void init()
+bool init()
 {
-	// Initialise GLFW (OpenGL), and any other API's (OpenAL?)
+	// Initialise GLFW (OpenGL), and any other APIs (OpenAL?)
 	if( !aeonAPIInit() )
 	{
 		fprintf( stderr, "Failed to initialize underlying API(s), exiting.\n" );
-		return -1;
+		return false;
 	}
     // Set openGL version to 4.3
     aeonSetGLVersion(4,3);
     // Set anti-aliasing to 4 samples.
     aeonSetFSAA(4);
-    // ??? idk
+    // ??? idk Figure out what this does, and why; then abstract it or remove it
     aeonSetWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     // Disable resizing the window. (Prevent user from breaking stuff)
 	aeonSetResizable(false);
@@ -56,13 +64,13 @@ void load()
     {
         fprintf( stderr, "Failed to open OpenGL window, exiting.\n" );
 		aeonAPITerminate();
-		return -1;
+		return false;
     }
     
 	glewExperimental = true; // Needed for core profile
 	if (glewInit() != GLEW_OK) {
-		fprintf(stderr, "Failed to initialize GLEW, exiting.\n");
-		return -1;
+		fprintf( stderr, "Failed to initialize GLEW, exiting.\n" );
+		return false;
 	}
     
     aeonSetWindowTitle("Aeon Splice Alpha");
