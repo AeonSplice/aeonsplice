@@ -13,7 +13,6 @@ int main(int argc, char *argv[])
     cout << "Initilizing..." << endl;
     if(!init())
     {
-        cleanUp();
         return -1;
     }
     // Loads the assets required at startup (intro animation, main menu textures, first rendering objects, etc)
@@ -58,33 +57,22 @@ bool init()
 	aeonSetResizable(false);
     
     // Attempt to open window context
-    if( !aeonOpenWindow(800,600,false) )
+    if( !aeonOpenWindow("Aeon Splice Alpha",800,600,false) )
     {
         fprintf( stderr, "Failed to open OpenGL window, exiting.\n" );
 		aeonAPITerminate();
 		return false;
     }
     
+    // GLEW must be declared after the GLFW window context is available :(
+    
 	glewExperimental = true; // Needed for core profile
 	if (glewInit() != GLEW_OK) {
 		fprintf( stderr, "Failed to initialize GLEW, exiting.\n" );
+        aeonAPITerminate();
 		return false;
 	}
-    
-    aeonSetWindowTitle("Aeon Splice Alpha");
-    glfwEnable(GLFW_STICKY_KEYS);
-	aeonCenterMouse();
-
-	// Dark blue background
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-
-	// Enable depth test
-	glEnable(GL_DEPTH_TEST);
-	// Accept fragment if it closer to the camera than the former one
-	glDepthFunc(GL_LESS); 
-
-	// Cull triangles which normal is not towards the camera
-	aeonEnableFaceCulling();
+	aeonCenterCursor();
     
     // Init camera with default settings
     //initCamera();
@@ -98,5 +86,5 @@ void cleanUp()
 
 bool isRunning()
 {
-    return false;
+    return aeonWindowShouldClose();
 }
