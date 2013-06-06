@@ -24,16 +24,19 @@ int main(int argc, char *argv[])
 	{
         // Should render current context (main menu, etc)
 		render();
+        break;
 	}
+    cout << "Cleaning up..." << endl;
     // Terminates underlying APIs and releases all memory
 	cleanUp();
+    cout << "Exiting." << endl;
     // Everything ran and didn't throw an error, return 0 (successful)
 	return 0;
 }
 
 void render()
 {
-    
+    cout << "loljk" << endl;
 }
 
 void load()
@@ -67,11 +70,11 @@ bool init()
     // GLEW must be declared after the GLFW window context is available :(
     
 	glewExperimental = true; // Needed for core profile
-	if (glewInit() != GLEW_OK) {
+	/*if (glewInit() != GLEW_OK) {
 		fprintf( stderr, "Failed to initialize GLEW, exiting.\n" );
         aeonAPITerminate();
 		return false;
-	}
+	}*/
 	aeonCenterCursor();
     
     // Init camera with default settings
@@ -86,5 +89,12 @@ void cleanUp()
 
 bool isRunning()
 {
-    return aeonWindowShouldClose();
+    if(aeonWindowShouldClose())
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
