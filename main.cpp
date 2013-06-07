@@ -1,3 +1,4 @@
+#define GLEW_STATIC
 #include "AeonIncludes.hpp"
 using namespace std;
 
@@ -70,11 +71,20 @@ bool init()
     // GLEW must be declared after the GLFW window context is available :(
     
 	glewExperimental = true; // Needed for core profile
-	/*if (glewInit() != GLEW_OK) {
-		fprintf( stderr, "Failed to initialize GLEW, exiting.\n" );
-        aeonAPITerminate();
-		return false;
-	}*/
+    GLenum GlewInitResult;
+    GlewInitResult = glewInit();
+    if (GLEW_OK != GlewInitResult) {
+        fprintf(stderr, "ERROR: %s\n", glewGetErrorString(GlewInitResult));
+        return false;
+    }
+
+    fprintf(
+        stdout,
+        "INFO: OpenGL Version: %s\n",
+        glGetString(GL_VERSION)
+    );
+
+    glClearColor(0.2f, 1.0f, 0.8f, 0.3f);
 	aeonCenterCursor();
     
     // Init camera with default settings

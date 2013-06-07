@@ -8,7 +8,7 @@ for /f "delims=" %%P in ('dir /b *.cpp') do (
   SET tempStr=GEN !CppName! 
   SET myvar=!myvar! "%%P"
 )
-set cmd=!myvar! -Wl,glew32.dll,glfw.dll
+set cmd=!myvar! -Wl,glew32s.lib,glfw.dll
 %cmd%
 pause
 exit
