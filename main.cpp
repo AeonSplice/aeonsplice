@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 	{
         // Should render current context (main menu, etc)
 		render();
-        break;
+		break;
 	}
     cout << "Cleaning up..." << endl;
     // Terminates underlying APIs and releases all memory
@@ -59,7 +59,7 @@ bool init()
     aeonSetFSAA(4);
     // Disable resizing the window. (Prevent user from breaking stuff)
 	aeonSetResizable(false);
-    
+
     // Attempt to open window context
     if( !aeonOpenWindow("Aeon Splice Alpha",800,600,false) )
     {
@@ -67,9 +67,9 @@ bool init()
 		aeonAPITerminate();
 		return false;
     }
-    
+
     // GLEW must be declared after the GLFW window context is available :(
-    
+
 	glewExperimental = true; // Needed for core profile
     GLenum GlewInitResult;
     GlewInitResult = glewInit();
@@ -86,7 +86,7 @@ bool init()
 
     glClearColor(0.2f, 1.0f, 0.8f, 0.3f);
 	aeonCenterCursor();
-    
+
     // Init camera with default settings
     //initCamera();
     return true;
