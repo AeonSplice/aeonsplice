@@ -56,11 +56,10 @@ bool aeonOpenWindow(std::string title)
 }
 bool aeonOpenWindow(std::string title,int width,int height,bool fullscreen)
 {
-    GLFWvidmode desktop;
-    glfwGetDesktopMode(&desktop);
+    // Setting the RGB bit depths to 0 causes it to automatically use the desktop bit depths.
     if(fullscreen)
     {
-        if(!glfwOpenWindow(width,height,desktop.RedBits,desktop.GreenBits,desktop.BlueBits,8,32,0,GLFW_FULLSCREEN))
+        if(!glfwOpenWindow(width,height,0,0,0,8,32,0,GLFW_FULLSCREEN))
         {
             return false;
         }
@@ -72,7 +71,7 @@ bool aeonOpenWindow(std::string title,int width,int height,bool fullscreen)
     }
     else
     {
-        if(!glfwOpenWindow(width,height,desktop.RedBits,desktop.GreenBits,desktop.BlueBits,8,32,0,GLFW_WINDOW))
+        if(!glfwOpenWindow(width,height,0,0,0,8,32,0,GLFW_WINDOW))
         {
             return false;
         }

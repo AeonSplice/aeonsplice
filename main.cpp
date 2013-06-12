@@ -11,33 +11,35 @@ void cleanUp();
 int main(int argc, char *argv[])
 {
     // Initilizes underlying API's and retrieves the configuration file
-    cout << "Initilizing..." << endl;
+    cout << "INFO: Initilizing..." << endl;
     if(!init())
     {
+        cout << "FATAL: Failure to initilize." << endl;
         return -1;
     }
     // Loads the assets required at startup (intro animation, main menu textures, first rendering objects, etc)
-    cout << "Loading assets..." << endl;
+    cout << "INFO: Loading assets..." << endl;
     load();
     // Run the main game loop
-    cout << "Running..." << endl;
+    cout << "INFO: Running..." << endl;
 	while(isRunning())
 	{
         // Should render current context (main menu, etc)
 		render();
-		break;
+		//break;
 	}
-    cout << "Cleaning up..." << endl;
+    cout << "INFO: Cleaning up..." << endl;
     // Terminates underlying APIs and releases all memory
 	cleanUp();
-    cout << "Exiting." << endl;
+    cout << "INFO: Exiting successfully." << endl;
     // Everything ran and didn't throw an error, return 0 (successful)
 	return 0;
 }
 
 void render()
 {
-    cout << "loljk" << endl;
+    glClear( GL_COLOR_BUFFER_BIT );
+    glfwSwapBuffers();
 }
 
 void load()
@@ -50,7 +52,7 @@ bool init()
 	// Initialise GLFW (OpenGL), and any other APIs (OpenAL?)
 	if( !aeonAPIInit() )
 	{
-		fprintf( stderr, "Failed to initialize underlying API(s), exiting.\n" );
+		fprintf( stderr, "FATAL: Failed to initialize underlying API(s), exiting.\n" );
 		return false;
 	}
     // Set openGL version to 4.3
@@ -63,7 +65,7 @@ bool init()
     // Attempt to open window context
     if( !aeonOpenWindow("Aeon Splice Alpha",800,600,false) )
     {
-        fprintf( stderr, "Failed to open OpenGL window, exiting.\n" );
+        fprintf( stderr, "FATAL: Failed to open OpenGL window, exiting.\n" );
 		aeonAPITerminate();
 		return false;
     }
@@ -77,14 +79,13 @@ bool init()
         fprintf(stderr, "ERROR: %s\n", glewGetErrorString(GlewInitResult));
         return false;
     }
-
     fprintf(
         stdout,
         "INFO: OpenGL Version: %s\n",
         glGetString(GL_VERSION)
     );
 
-    glClearColor(0.2f, 1.0f, 0.8f, 0.3f);
+    glClearColor(0.0f, 0.4f, 0.8f, 0.5f);
 	aeonCenterCursor();
 
     // Init camera with default settings
