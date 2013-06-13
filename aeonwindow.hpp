@@ -10,7 +10,7 @@ void aeonSetResizable(bool canResize);
 bool aeonOpenWindow(std::string title);
 bool aeonOpenWindow(std::string title,int width,int height,bool fullscreen);
 
-//bool aeonSetWindowTitle(string);    // REtitles the main window
+void aeonSetWindowTitle(std::string title);    // REtitles the main window
 void aeonCenterMouse();             // Centers the underlying mouse only
 void aeonCenterCursor();            // Centers both the underlying mouse AND the displayed mouse
 

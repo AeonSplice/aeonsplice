@@ -1,7 +1,7 @@
 ﻿#ifndef _AEONCLOCK_
 #define _AEONCLOCK_
 
-double getCurrentTime()
+double getCurrentTimeMilli()
 {
     return glfwGetTime();
 }

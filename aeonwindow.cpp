@@ -83,6 +83,11 @@ bool aeonOpenWindow(std::string title,int width,int height,bool fullscreen)
     }
 }
 
+void aeonSetWindowTitle(std::string title)
+{
+    glfwSetWindowTitle(title.c_str());
+}
+
 void aeonCenterMouse()
 {
     int width,height;

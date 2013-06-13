@@ -75,15 +75,13 @@ bool init()
 	glewExperimental = true; // Needed for core profile
     GLenum GlewInitResult;
     GlewInitResult = glewInit();
-    if (GLEW_OK != GlewInitResult) {
+    if (GLEW_OK != GlewInitResult)
+    {
         fprintf(stderr, "ERROR: %s\n", glewGetErrorString(GlewInitResult));
         return false;
     }
-    fprintf(
-        stdout,
-        "INFO: OpenGL Version: %s\n",
-        glGetString(GL_VERSION)
-    );
+
+    fprintf(stdout,"INFO: OpenGL Version: %s\n",glGetString(GL_VERSION));
 
     glClearColor(0.0f, 0.4f, 0.8f, 0.5f);
 	aeonCenterCursor();
