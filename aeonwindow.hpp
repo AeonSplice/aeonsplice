@@ -1,18 +1,23 @@
 #ifndef _AEONWINDOW_
 #define _AEONWINDOW_
-bool aeonAPIInit();
-void aeonAPITerminate();
+namespace aeon
+{
+    bool APIInit();
+    void APITerminate();
 
-void aeonSetGLVersion(int major,int minor);
-void aeonSetFSAA(int sampling);
-void aeonSetResizable(bool canResize);
+    void setGLVersion(int major,int minor);
+    void setFSAA(int sampling);
+    void setResizable(bool canResize);
 
-bool aeonOpenWindow(std::string title);
-bool aeonOpenWindow(std::string title,int width,int height,bool fullscreen);
+    bool openWindow(std::string title);
+    bool openWindow(std::string title,int width,int height,bool fullscreen);
+    bool openWindow(std::string title,std::string width,std::string height,std::string fullscreen);
+    void closeWindow();
 
-void aeonSetWindowTitle(std::string title);    // REtitles the main window
-void aeonCenterMouse();             // Centers the underlying mouse only
-void aeonCenterCursor();            // Centers both the underlying mouse AND the displayed mouse
+    void setWindowTitle(std::string title);    // REtitles the main window
+    void centerMouse();             // Centers the underlying mouse only
+    void centerCursor();            // Centers both the underlying mouse AND the displayed mouse
 
-bool aeonWindowShouldClose();
+    bool windowShouldClose();
+}
 #endif

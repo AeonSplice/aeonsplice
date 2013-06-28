@@ -1,8 +1,14 @@
-﻿class aeonRenderer
+﻿#ifndef _AEONRENDERER_
+#define _AEONRENDERER_
+namespace aeon
 {
-public:
-    aeonRenderer();
-private:
-    aeonInputMap inputs;
-    aeonMeshMap meshes;
-};
+    class renderer
+    {
+    public:
+        renderer();
+    private:
+        inputmap inputs;
+        meshmap meshes;
+    };
+}
+#endif // _AEONRENDERER_

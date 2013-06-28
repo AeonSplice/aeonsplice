@@ -1,5 +1,5 @@
 #include <string>
-#include <gl/glfw3.h>
+#include <glfw/glfw3.h>
 #include "aeonwindow.hpp"
 using namespace std;
 
@@ -47,11 +47,11 @@ void aeonSetReizable(bool canResize)
 
 bool aeonOpenWindow(string title)
 {
-    aeonSetWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    GLFWmonitor prim = glfwGetPrimaryMonitor();
-    GLFWvidmode desktop = glfwGetVideoMode(prim);
-    GLFWwindow mainWindow = glfwCreateWindow(desktop.Width,  // Width of desktop
-                                             desktop.Height, // Height of desktop
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    GLFWmonitor* prim = glfwGetPrimaryMonitor();
+    GLFWvidmode* desktop = glfwGetVideoMode(prim);
+    GLFWwindow* mainWindow = glfwCreateWindow(desktop->Width,  // Width of desktop
+                                             desktop->Height, // Height of desktop
                                              title.c_str(),  // Title of the window
                                              prim,           // Monitor to go fullscreen with
                                              NULL            // Window to share information with (none)
@@ -64,13 +64,14 @@ bool aeonOpenWindow(string title)
     {
         aeonWindowHandle=mainWindow;
         glfwMakeContextCurrent(aeonWindowHandle);
+        cout << desktop.Width << endl;
         return true;
     }
 }
 
 bool aeonOpenWindow(string title,int width,int height,bool fullscreen)
 {
-    aeonSetWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     GLFWmonitor prim = glfwGetPrimaryMonitor();
     GLFWwindow mainWindow;
     if(fullscreen)

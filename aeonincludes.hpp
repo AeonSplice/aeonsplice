@@ -9,5 +9,7 @@
 //#include <glm/glm.hpp>
 
 // Engine Includes
+#include "aeonplatform.hpp"
 #include "aeonwindow.hpp"
+#include "aeonconfig.hpp"
 //#include "AeonKeyboard.hpp"
