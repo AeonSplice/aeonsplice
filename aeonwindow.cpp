@@ -1,6 +1,7 @@
 ﻿#include <string>
 #include <sstream>
 #include <GL/glfw.h>
+#include "aeonconfig.hpp"
 #include "aeonwindow.hpp"
 namespace aeon
 {
@@ -84,20 +85,44 @@ namespace aeon
             }
         }
     }
-    bool openWindow(std::string title,std::string width,std::string height,std::string fullscreen)
+    bool openWindow(config* settings)
     {
+        std::string title = settings->getValue("graphics","title");
+        std::string fullscreen = settings->getValue("graphics","fullscreen");
+        std::string width = settings->getValue("graphics","width");
+        std::string height = settings->getValue("graphics","height");
+        if(title=="")
+        {
+            title="Wut";
+            settings->setKeyValue("graphics","title","Wut");
+        }
         int iWidth,iHeight;
         bool fullsrn;
         if(fullscreen=="true"||fullscreen=="1")
         {
             fullsrn=true;
         }
-        else
+        else if(fullscreen=="false"||fullscreen=="0")
         {
             fullsrn=false;
         }
-        std::istringstream (width) >> iWidth;
-        std::istringstream (height) >> iHeight;
+        else
+        {
+            fullsrn=false;
+            settings->setKeyValue("graphics","fullscreen","false");
+        }
+        std::istringstream iws(width);
+        std::istringstream ihs(height);
+        if(!(iws>>iWidth))
+        {
+            iWidth=800;
+            settings->setKeyValue("graphics","width","800");
+        }
+        if(!(ihs>>iHeight))
+        {
+            iHeight=600;
+            settings->setKeyValue("graphics","height","600");
+        }
         return openWindow(title,iWidth,iHeight,fullsrn);
     }
 

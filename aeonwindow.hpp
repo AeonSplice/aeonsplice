@@ -1,5 +1,6 @@
 #ifndef _AEONWINDOW_
 #define _AEONWINDOW_
+#include "aeonconfig.hpp"
 namespace aeon
 {
     bool APIInit();
@@ -11,10 +12,10 @@ namespace aeon
 
     bool openWindow(std::string title);
     bool openWindow(std::string title,int width,int height,bool fullscreen);
-    bool openWindow(std::string title,std::string width,std::string height,std::string fullscreen);
+    bool openWindow(config* settings);
     void closeWindow();
 
-    void setWindowTitle(std::string title);    // REtitles the main window
+    void setWindowTitle(std::string title);    // Retitles the main window
     void centerMouse();             // Centers the underlying mouse only
     void centerCursor();            // Centers both the underlying mouse AND the displayed mouse
 

@@ -64,6 +64,11 @@ namespace aeon
         return false;
     }
 
+    bool config::saveToFile(std::string file)
+    {
+        return false;
+    }
+
     void config::setReadOnly(bool readonly)
     {
 
@@ -120,6 +125,26 @@ namespace aeon
     {
         if(!exists(section))
             addSection(section);
+        std::pair< std::map<std::string,std::string>::iterator,bool > ret;
+        ret = this->data.at(section).insert( std::pair<std::string,std::string>(key,value) );
+        if(ret.second==false)
+            return false;
+        else
+            return true;
+
+    }
+
+    bool config::setKeyValue(std::string section,std::string key,std::string value)
+    {
+        if(!exists(section))
+            addSection(section);
+        else
+        {
+            if(exists(section,key))
+            {
+                this->data.at(section).erase(key);
+            }
+        }
         std::pair< std::map<std::string,std::string>::iterator,bool > ret;
         ret = this->data.at(section).insert( std::pair<std::string,std::string>(key,value) );
         if(ret.second==false)

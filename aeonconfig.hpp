@@ -33,6 +33,7 @@ namespace aeon
         std::string getValue(std::string section,std::string key);
         bool addSection(std::string section);
         bool addKeyValue(std::string section,std::string key,std::string value);
+        bool setKeyValue(std::string section,std::string key,std::string value);
         bool exists(std::string section);
         bool exists(std::string section,std::string key);
     private:

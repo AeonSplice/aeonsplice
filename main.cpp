@@ -61,7 +61,6 @@ bool init()
         fprintf( stderr, "FATAL: Failed to load config.\n" );
         return false;
     }
-    //if(!(settings->loadDefaultsFromString(aeon::getDefaultConfigString())))
     settings->print();
 	// Initialise GLFW (OpenGL), and any other APIs (OpenAL?)
 	if( !aeon::APIInit() )
@@ -76,7 +75,7 @@ bool init()
     // Disable resizing the window. (Prevent user from breaking stuff)
 	aeon::setResizable(false);
     // Attempt to open window context
-    if( !aeon::openWindow("Aeon Splice Alpha",settings->getValue("graphics","width"),settings->getValue("graphics","height"),settings->getValue("graphics","fullscreen")) )
+    if( !aeon::openWindow(settings) )
     {
         fprintf( stderr, "FATAL: Failed to open OpenGL window.\n" );
 		aeon::APITerminate();
@@ -107,6 +106,15 @@ bool init()
 void cleanUp()
 {
     aeon::APITerminate();
+    settings->print();
+    if(!settings->saveToFile((aeon::getUserDir())+"/.aeonsplice/settings.ini"))
+    {
+        cout << "WARNING: Failed to save configuration!" << endl;
+    }
+    else
+    {
+        cout << "INFO: Successfully saved configuration." << endl;
+    }
 }
 
 bool isRunning()
