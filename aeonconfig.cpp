@@ -13,6 +13,7 @@ namespace aeon
     }
     bool config::loadFromFile(std::string file)
     {
+        std::cout << file << std::endl; // DEBUGGING CODE REMOVE LATER
         FILE* cfgFile;
         char buffer[100];
         cfgFile = fopen(file.c_str(),"r");

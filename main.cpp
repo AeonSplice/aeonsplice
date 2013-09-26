@@ -56,7 +56,7 @@ void load()
 bool init()
 {
     settings = new aeon::config;
-    if(!(settings->loadFromFile((aeon::getUserDir())+"/.aeonsplice/settings.ini")))
+    if(!(settings->loadFromFile((aeon::getUserDir())+"\\.aeonsplice\\settings.ini")))
     {
         fprintf( stderr, "FATAL: Failed to load config.\n" );
         return false;
