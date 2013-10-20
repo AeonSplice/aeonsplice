@@ -12,7 +12,7 @@ namespace aeon
         path = getenv("USERPROFILE");
         if(path!=NULL)
         {
-            std::cout << path << std::endl; // DEBUGGING CODE REMOVE LATER
+            // std::cout << path << std::endl; // DEBUGGING CODE REMOVE LATER
             std::stringstream temp;
             std::string output;
             temp << path;

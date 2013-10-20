@@ -23,7 +23,7 @@ namespace aeon
         */
         bool saveToFile(std::string file);
 
-        void setReadOnly(bool readyonly);
+        void setReadOnly(bool readonly);
         void setIgnoreWarnings(bool ignorewarnings);
 
         void print();
@@ -37,8 +37,8 @@ namespace aeon
         bool exists(std::string section);
         bool exists(std::string section,std::string key);
     private:
-        bool readonly;
-        bool ignorewarnings;
+        bool isreadonly;
+        bool isignorewarnings;
         std::map< std::string, std::map<std::string,std::string> > data;
     };
     std::string getDefaultConfigString();

@@ -1,4 +1,6 @@
 #define GLEW_STATIC
+#define EXIT_FAILURE -1
+#define EXIT_SUCCESS 0
 #include "AeonIncludes.hpp"
 using namespace std;
 
@@ -18,7 +20,7 @@ int main(int argc, char *argv[])
     if(!init())
     {
         cout << "FATAL: Failure to initilize." << endl;
-        return -1;
+        return EXIT_FAILURE;
     }
     // Loads the assets required at startup (intro animation, main menu textures, first rendering objects, etc)
     cout << "INFO: Loading assets..." << endl;
@@ -36,7 +38,7 @@ int main(int argc, char *argv[])
 	cleanUp();
     cout << "INFO: Exiting successfully." << endl;
     // Everything ran and didn't throw an error, return 0 (successful)
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 void render()

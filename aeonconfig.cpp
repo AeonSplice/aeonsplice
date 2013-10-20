@@ -67,16 +67,107 @@ namespace aeon
 
     bool config::saveToFile(std::string file)
     {
-        return false;
+        std::cout << file << std::endl; // DEBUGGING CODE REMOVE LATER
+        FILE* cfgFile;
+        char buffer[100];
+        cfgFile = fopen(file.c_str(),"r");
+        if(cfgFile==NULL)
+            return false;
+        else
+        {
+            std::map<std::string, bool> completedSections;
+            std::vector<std::string> secs = getSections();
+            for(std::vector<std::string>::iterator it = secs.begin(); it!=secs.end();it++)
+            {
+                completedSections.insert(std::pair<std::string,bool>(*it,false));
+            }
+            std::map<std::string, std::map<std::string, bool> > completedValues;
+            for(std::vector<std::string>::iterator it2 = secs.begin(); it2!=secs.end();it2++)
+            {
+                std::vector<std::string> keysTmp = getKeys(*it2);
+                std::map<std::string,bool> temp;
+                for(std::vector<std::string>::iterator it3 = keysTmp.begin(); it3!=keysTmp.end();it3++)
+                {
+                    temp.insert(std::pair<std::string,bool>(*it3,false));
+                }
+                completedValues.insert(std::pair<std::string,std::map<std::string,bool> >(*it2,temp));
+            }
+            std::vector<std::string> fileIOBuffer;
+            while(!feof(cfgFile))
+            {
+                if(fgets(buffer,100,cfgFile)==NULL)
+                    break;
+                std::string temp = buffer;
+                fileIOBuffer.push_back(temp);
+            }
+            fclose(cfgFile);
+            unsigned int sweeper = 0;
+            std::string section;
+            section = "general";
+            while(sweeper<fileIOBuffer.size())
+            {
+                if(fileIOBuffer.at(sweeper).at(0)=='[' && fileIOBuffer.at(sweeper).at(fileIOBuffer.at(sweeper).size()-1)==']')
+                {
+                    if(completedSections.find(section)->second==true)
+                    {
+                        section = fileIOBuffer.at(sweeper).substr(1,(fileIOBuffer.at(sweeper).size()-2));
+                        sweeper++;
+                    }
+                    else
+                    {
+                        for(std::map<std::string,bool>::iterator iter1 = completedValues.at(section).begin(); iter1 != completedValues.at(section).end(); iter1++)
+                        {
+                            if(iter1->second==false)
+                            {
+                                std::string asdf = iter1->first + "=" + getValue(section,iter1->first);
+                                fileIOBuffer.insert(fileIOBuffer.begin()+(sweeper-1), asdf);
+                                iter1->second=true;
+                            }
+                        }
+                        completedSections.find(section)->second=true;
+                        section = fileIOBuffer.at(sweeper).substr(1,(fileIOBuffer.at(sweeper).size()-2));
+                        sweeper++;
+                    }
+                }
+                else if(fileIOBuffer.at(sweeper).at(0)==';')
+                {
+                    sweeper++;
+                }
+                else
+                {
+                    unsigned pos = fileIOBuffer.at(sweeper).find("=");
+                    if(pos!=std::string::npos)
+                    {
+                        std::string currentKey = fileIOBuffer.at(sweeper).substr(0,pos);
+                        if(exists(section,currentKey))
+                        {
+                            std::string temp = currentKey + "=" + getValue(section,currentKey);
+                            fileIOBuffer.at(sweeper)=temp;
+                            sweeper++;
+                        }
+                        else
+                        {
+                            sweeper++;
+                        }
+                    }
+                    else
+                    {
+                        sweeper++;
+                    }
+                }
+            }
+
+        }
+        return true;
     }
 
     void config::setReadOnly(bool readonly)
     {
-
+        isreadonly = readonly;
     }
     void config::setIgnoreWarnings(bool ignorewarnings)
     {
-
+        isignorewarnings = ignorewarnings;
     }
 
     void config::print()
@@ -86,7 +177,7 @@ namespace aeon
             std::cout << "[" << sec->first << "]" << std::endl;
             for(std::map<std::string,std::string>::iterator key=sec->second.begin();key!=sec->second.end();key++)
             {
-                std::cout << key->first << "=>" << key->second << std::endl;
+                std::cout << key->first << " => " << key->second << std::endl;
             }
         }
     }
@@ -94,11 +185,22 @@ namespace aeon
     std::vector<std::string> config::getSections()
     {
         std::vector<std::string> sections;
+        for(std::map< std::string,std::map<std::string,std::string> >::iterator sec=data.begin();sec!=data.end();sec++)
+        {
+            sections.push_back(sec->first);
+        }
         return sections;
     }
     std::vector<std::string> config::getKeys(std::string section)
     {
         std::vector<std::string> keys;
+        if(exists(section))
+        {
+            for(std::map<std::string,std::string>::iterator key = data.at(section).begin(); key!=data.at(section).end(); key++)
+            {
+                keys.push_back(key->first);
+            }
+        }
         return keys;
     }
     std::string config::getValue(std::string section,std::string key)
