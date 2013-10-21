@@ -60,10 +60,9 @@ bool init()
     settings = new aeon::config;
     if(!(settings->loadFromFile((aeon::getUserDir())+"\\.aeonsplice\\settings.ini")))
     {
-        fprintf( stderr, "FATAL: Failed to load config.\n" );
-        return false;
+        fprintf( stderr, "WARNING: Failed to load config.\n" );
     }
-    settings->print();
+    //settings->print();
 	// Initialise GLFW (OpenGL), and any other APIs (OpenAL?)
 	if( !aeon::APIInit() )
 	{
@@ -108,7 +107,7 @@ bool init()
 void cleanUp()
 {
     aeon::APITerminate();
-    settings->print();
+    //settings->print();
     if(!settings->saveToFile((aeon::getUserDir())+"/.aeonsplice/settings.ini"))
     {
         cout << "WARNING: Failed to save configuration!" << endl;

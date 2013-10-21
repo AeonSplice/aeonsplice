@@ -72,16 +72,45 @@ namespace aeon
         char buffer[100];
         cfgFile = fopen(file.c_str(),"r");
         if(cfgFile==NULL)
-            return false;
+        {
+            cfgFile = fopen(file.c_str(),"w");
+            if(cfgFile==NULL)
+                return false;
+            else
+            {
+                std::vector<std::string> fileIOBuffer;
+                std::vector<std::string> secs = getSections();
+                for(std::vector<std::string>::iterator sectionIterator = secs.begin();sectionIterator!=secs.end();sectionIterator++)
+                {
+                    std::string sectionTemp = "[" + *sectionIterator + "]";
+                    fileIOBuffer.push_back(sectionTemp);
+                    std::vector<std::string> keys = getKeys(*sectionIterator);
+                    for(std::vector<std::string>::iterator keysIterator = keys.begin();keysIterator!=keys.end();keysIterator++)
+                    {
+                        std::string keysTemp = *keysIterator + "=" + getValue(*sectionIterator,*keysIterator);
+                        fileIOBuffer.push_back(keysTemp);
+                    }
+                }
+                for(unsigned int bufferIterator = 0; bufferIterator < fileIOBuffer.size(); bufferIterator++)
+                {
+                    std::string temp = fileIOBuffer.at(bufferIterator) + "\n";
+                    fputs(temp.c_str(),cfgFile);
+                }
+                fclose(cfgFile);
+            }
+        }
         else
         {
             std::map<std::string, bool> completedSections;
+            std::map<std::string, std::map<std::string, bool> > completedValues;
+
+
             std::vector<std::string> secs = getSections();
+
             for(std::vector<std::string>::iterator it = secs.begin(); it!=secs.end();it++)
             {
                 completedSections.insert(std::pair<std::string,bool>(*it,false));
             }
-            std::map<std::string, std::map<std::string, bool> > completedValues;
             for(std::vector<std::string>::iterator it2 = secs.begin(); it2!=secs.end();it2++)
             {
                 std::vector<std::string> keysTmp = getKeys(*it2);
@@ -108,7 +137,7 @@ namespace aeon
             {
                 if(fileIOBuffer.at(sweeper).at(0)=='[' && fileIOBuffer.at(sweeper).at(fileIOBuffer.at(sweeper).size()-1)==']')
                 {
-                    if(completedSections.find(section)->second==true)
+                    if(completedSections.at(section)==true)
                     {
                         section = fileIOBuffer.at(sweeper).substr(1,(fileIOBuffer.at(sweeper).size()-2));
                         sweeper++;
@@ -119,12 +148,13 @@ namespace aeon
                         {
                             if(iter1->second==false)
                             {
+                                std::cout << iter1->first << std::endl;
                                 std::string asdf = iter1->first + "=" + getValue(section,iter1->first);
                                 fileIOBuffer.insert(fileIOBuffer.begin()+(sweeper-1), asdf);
                                 iter1->second=true;
                             }
                         }
-                        completedSections.find(section)->second=true;
+                        completedSections.at(section)=true;
                         section = fileIOBuffer.at(sweeper).substr(1,(fileIOBuffer.at(sweeper).size()-2));
                         sweeper++;
                     }
@@ -156,7 +186,39 @@ namespace aeon
                     }
                 }
             }
-
+            for(std::map<std::string,bool>::iterator secIt = completedSections.begin();secIt!=completedSections.end();secIt++)
+            {
+                // This is to print out all the sections that didn't exist to the end of the file
+                if(secIt->second==false)
+                {
+                    std::string temp1 = "[" + secIt->first + "]";
+                    fileIOBuffer.push_back(temp1);
+                    for(std::map<std::string,bool>::iterator keyIt=completedValues.at(secIt->first).begin(); keyIt!=completedValues.at(secIt->first).end();keyIt++)
+                    {
+                        if(keyIt->second==false)
+                        {
+                            if(exists(secIt->first,keyIt->first))
+                            {
+                                std::string temp2 = keyIt->first + "=" + getValue(secIt->first,keyIt->first);
+                                fileIOBuffer.push_back(temp2);
+                            }
+                        }
+                    }
+                }
+            }
+            cfgFile = fopen(file.c_str(),"w");
+            if(cfgFile==NULL)
+                return false;
+            else
+            {
+                for(unsigned int iter4 = 0; iter4 < fileIOBuffer.size(); iter4++)
+                {
+                    //std::cout << fileIOBuffer.at(iter4) << std::endl;
+                    std::string temp = fileIOBuffer.at(iter4) + "\n";
+                    fputs(temp.c_str(),cfgFile);
+                }
+                fclose(cfgFile);
+            }
         }
         return true;
     }
