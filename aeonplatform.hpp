@@ -3,5 +3,6 @@
 namespace aeon
 {
     std::string getUserDir();
+    void createDir(std::string);
 }
 #endif

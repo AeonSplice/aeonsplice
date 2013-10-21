@@ -85,44 +85,48 @@ namespace aeon
             }
         }
     }
-    bool openWindow(config* settings)
+    bool openWindow(config &settings)
     {
-        std::string title = settings->getValue("graphics","title");
-        std::string fullscreen = settings->getValue("graphics","fullscreen");
-        std::string width = settings->getValue("graphics","width");
-        std::string height = settings->getValue("graphics","height");
+        std::string title = settings.getValue("graphics","title");
+        std::string fullscreen = settings.getValue("graphics","fullscreen");
+        std::string width = settings.getValue("graphics","width");
+        std::string height = settings.getValue("graphics","height");
         if(title=="")
         {
             title="Wut";
-            settings->setKeyValue("graphics","title","Wut");
+            settings.setKeyValue("graphics","title","Wut");
         }
         int iWidth,iHeight;
         bool fullsrn;
-        if(fullscreen=="true"||fullscreen=="1")
+        if(fullscreen == "true" || fullscreen == "1")
         {
             fullsrn=true;
         }
-        else if(fullscreen=="false"||fullscreen=="0")
+        else if(fullscreen=="false" || fullscreen=="0")
         {
             fullsrn=false;
         }
         else
         {
             fullsrn=false;
-            settings->setKeyValue("graphics","fullscreen","false");
+            settings.setKeyValue("graphics","fullscreen","false");
         }
         std::istringstream iws(width);
         std::istringstream ihs(height);
         if(!(iws>>iWidth))
         {
             iWidth=800;
-            settings->setKeyValue("graphics","width","800");
+            settings.setKeyValue("graphics","width","800");
         }
         if(!(ihs>>iHeight))
         {
             iHeight=600;
-            settings->setKeyValue("graphics","height","600");
+            settings.setKeyValue("graphics","height","600");
         }
+        /*std::cout << title << std::endl;
+        std::cout << iWidth << std::endl;
+        std::cout << iHeight << std::endl;
+        std::cout << fullsrn << std::endl;*/
         return openWindow(title,iWidth,iHeight,fullsrn);
     }
 

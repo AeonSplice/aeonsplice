@@ -2,6 +2,7 @@
 #include <string>
 #include <stdlib.h>
 #include <sstream>
+#include <Windows.h>
 #include "aeonplatform.hpp"
 
 namespace aeon
@@ -23,5 +24,9 @@ namespace aeon
         {
             return NULL;
         }
+    }
+    void createDir(std::string folder)
+    {
+        CreateDirectory(folder,NULL);
     }
 }

@@ -12,7 +12,7 @@ namespace aeon
 
     bool openWindow(std::string title);
     bool openWindow(std::string title,int width,int height,bool fullscreen);
-    bool openWindow(config* settings);
+    bool openWindow(config &settings);
     void closeWindow();
 
     void setWindowTitle(std::string title);    // Retitles the main window

@@ -10,7 +10,7 @@ bool isRunning();
 void render();
 void cleanUp();
 
-aeon::config* settings;
+aeon::config * settingsPointer;
 //aeon::renderer* intro;
 
 int main(int argc, char *argv[])
@@ -49,20 +49,19 @@ void render()
 
 void load()
 {
-    /*if(!settings->loadFromFile("C:/Users/Josh/.aeonsplice/config.ini"))
-    {
-        cout << "Failed to load config..." << endl;
-    }*/
+    // Things that need to happen after everything is up and running
 }
 
 bool init()
 {
-    settings = new aeon::config;
-    if(!(settings->loadFromFile((aeon::getUserDir())+"\\.aeonsplice\\settings.ini")))
+    //aeon::config settings;
+    settingsPointer = new aeon::config();
+    aeon::createDir(aeon::getUserDir()+"\\.aeonsplice\\");
+    if(!(settingsPointer->loadFromFile((aeon::getUserDir())+"\\.aeonsplice\\settings.ini")))
     {
         fprintf( stderr, "WARNING: Failed to load config.\n" );
     }
-    //settings->print();
+    //settingsPointer->print();
 	// Initialise GLFW (OpenGL), and any other APIs (OpenAL?)
 	if( !aeon::APIInit() )
 	{
@@ -76,12 +75,14 @@ bool init()
     // Disable resizing the window. (Prevent user from breaking stuff)
 	aeon::setResizable(false);
     // Attempt to open window context
-    if( !aeon::openWindow(settings) )
+    if( !aeon::openWindow(*settingsPointer) )
     {
         fprintf( stderr, "FATAL: Failed to open OpenGL window.\n" );
 		aeon::APITerminate();
 		return false;
     }
+
+    std::cout << settingsPointer->getValue("graphics","fullscreen") << std::endl;
 
     // GLEW must be declared after the GLFW window context is available :(
 
@@ -107,8 +108,9 @@ bool init()
 void cleanUp()
 {
     aeon::APITerminate();
-    //settings->print();
-    if(!settings->saveToFile((aeon::getUserDir())+"/.aeonsplice/settings.ini"))
+    //settingsPointer->print();
+    settingsPointer->setKeyValue("graphics","title","trap");
+    if(!settingsPointer->saveToFile((aeon::getUserDir())+"/.aeonsplice/settings.ini"))
     {
         cout << "WARNING: Failed to save configuration!" << endl;
     }
