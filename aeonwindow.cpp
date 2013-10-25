@@ -93,8 +93,8 @@ namespace aeon
         std::string height = settings.getValue("graphics","height");
         if(title=="")
         {
-            title="Wut";
-            settings.setKeyValue("graphics","title","Wut");
+            title="Default Title";
+            settings.setKeyValue("graphics","title","Default Title");
         }
         int iWidth,iHeight;
         bool fullsrn;
@@ -123,10 +123,6 @@ namespace aeon
             iHeight=600;
             settings.setKeyValue("graphics","height","600");
         }
-        /*std::cout << title << std::endl;
-        std::cout << iWidth << std::endl;
-        std::cout << iHeight << std::endl;
-        std::cout << fullsrn << std::endl;*/
         return openWindow(title,iWidth,iHeight,fullsrn);
     }
 

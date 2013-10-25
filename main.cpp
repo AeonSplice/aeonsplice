@@ -56,7 +56,6 @@ bool init()
 {
     //aeon::config settings;
     settingsPointer = new aeon::config();
-    aeon::createDir(aeon::getUserDir()+"\\.aeonsplice\\");
     if(!(settingsPointer->loadFromFile((aeon::getUserDir())+"\\.aeonsplice\\settings.ini")))
     {
         fprintf( stderr, "WARNING: Failed to load config.\n" );
@@ -82,8 +81,6 @@ bool init()
 		return false;
     }
 
-    std::cout << settingsPointer->getValue("graphics","fullscreen") << std::endl;
-
     // GLEW must be declared after the GLFW window context is available :(
 
 	glewExperimental = true; // Needed for core profile
@@ -108,8 +105,7 @@ bool init()
 void cleanUp()
 {
     aeon::APITerminate();
-    //settingsPointer->print();
-    settingsPointer->setKeyValue("graphics","title","trap");
+    settingsPointer->print();
     if(!settingsPointer->saveToFile((aeon::getUserDir())+"/.aeonsplice/settings.ini"))
     {
         cout << "WARNING: Failed to save configuration!" << endl;

@@ -8,9 +8,7 @@
 namespace aeon
 {
     config::config()
-    {
-        std::cout << "INFO: F*** YOU I'M AN OCTOPUS" << std::endl;
-    }
+    {}
     bool config::loadFromFile(std::string file)
     {
         FILE* cfgFile;
