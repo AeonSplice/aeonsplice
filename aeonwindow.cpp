@@ -1,10 +1,14 @@
-﻿#include <string>
+#include <string>
 #include <sstream>
-#include <GL/glfw.h>
-#include "aeonconfig.hpp"
+#include <glfw/glfw3.h>
 #include "aeonwindow.hpp"
 namespace aeon
 {
+    GLFWwindow* aeonWindowHandle;
+    GLFWwindow* getMainWindowHandle()
+    {
+        return aeonWindowHandle;
+    }
     bool APIInit()
     {
         if(!glfwInit())
@@ -16,6 +20,7 @@ namespace aeon
             return true;
         }
     }
+
     void APITerminate()
     {
         glfwTerminate();
@@ -23,68 +28,84 @@ namespace aeon
 
     void setGLVersion(int major,int minor)
     {
-        glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, major);
-        glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, minor);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
     }
 
     void setFSAA(int sampling)
     {
-        glfwOpenWindowHint(GLFW_FSAA_SAMPLES, sampling);
+        glfwWindowHint(GLFW_SAMPLES, sampling);
     }
+
     void setResizable(bool canResize)
     {
         if(canResize)
         {
-            glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_FALSE);
+            glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
         }
         else
         {
-            glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);
+            glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
         }
     }
 
-    bool openWindow(std::string title)
+    /*bool openWindow(std::string title)
     {
-        GLFWvidmode desktop;
-        glfwGetDesktopMode(&desktop);
-        if(!glfwOpenWindow(desktop.Width,desktop.Height,desktop.RedBits,desktop.GreenBits,desktop.BlueBits,8,32,0,GLFW_FULLSCREEN))
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        GLFWvidmode* desktop = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        GLFWwindow* mainWindow = glfwCreateWindow(desktop->Width,  // Width of desktop
+                                                 desktop->Height, // Height of desktop
+                                                 title.c_str(),  // Title of the window
+                                                 glfwGetPrimaryMonitor(),           // Monitor to go fullscreen with
+                                                 NULL            // Window to share information with (none)
+                                                );
+        if(!mainWindow)
         {
             return false;
         }
         else
         {
-            glfwSetWindowTitle(title.c_str());
+            aeonWindowHandle=mainWindow;
+            glfwMakeContextCurrent(aeonWindowHandle);
             return true;
         }
-    }
+    }*/
+
     bool openWindow(std::string title,int width,int height,bool fullscreen)
     {
-        // Setting the RGB bit depths to 0 causes it to automatically use the desktop bit depths.
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        GLFWmonitor* prim = glfwGetPrimaryMonitor();
+        GLFWwindow* mainWindow;
         if(fullscreen)
         {
-            if(!glfwOpenWindow(width,height,0,0,0,8,32,0,GLFW_FULLSCREEN))
-            {
-                return false;
-            }
-            else
-            {
-                glfwSetWindowTitle(title.c_str());
-                return true;
-            }
+        mainWindow = glfwCreateWindow(width,  // Width of desktop
+                                      height, // Height of desktop
+                                      title.c_str(), // Title of the window
+                                      prim,          // Monitor to go fullscreen with
+                                      NULL           // Window to share information with (none)
+                                     );
         }
         else
         {
-            if(!glfwOpenWindow(width,height,0,0,0,8,32,0,GLFW_WINDOW))
-            {
-                return false;
-            }
-            else
-            {
-                glfwSetWindowTitle(title.c_str());
-                return true;
-            }
+        mainWindow = glfwCreateWindow(width,  // Width of desktop
+                                      height, // Height of desktop
+                                      title.c_str(), // Title of the window
+                                      NULL,          // Windowed mode (no monitor specified)
+                                      NULL           // Window to share information with (none)
+                                     );
+        }
+        if(!mainWindow)
+        {
+            return false;
+        }
+        else
+        {
+            aeonWindowHandle=mainWindow;
+            glfwMakeContextCurrent(aeonWindowHandle);
+            return true;
         }
     }
+
     bool openWindow(config &settings)
     {
         std::string title = settings.getValue("graphics","title");
@@ -126,38 +147,29 @@ namespace aeon
         return openWindow(title,iWidth,iHeight,fullsrn);
     }
 
-    void closeWindow()
+    bool windowShouldClose()
     {
-        glfwCloseWindow();
-    }
-
-    void setWindowTitle(std::string title)
-    {
-        glfwSetWindowTitle(title.c_str());
+        if(glfwWindowShouldClose(aeonWindowHandle)==GL_TRUE)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     void centerMouse()
     {
         int width,height;
-        glfwGetWindowSize(&width,&height);
-        glfwSetMousePos(width/2,height/2);
+        glfwGetWindowSize(aeonWindowHandle,&width,&height);
+        glfwSetCursorPos(aeonWindowHandle,(double)width,(double)height);
     }
+
     void centerCursor()
     {
         int width,height;
-        glfwGetWindowSize(&width,&height);
-        glfwSetMousePos(width/2,height/2);
-    }
-
-    bool windowShouldClose()
-    {
-        if(glfwGetKey( GLFW_KEY_ESC ) != GLFW_PRESS && glfwGetWindowParam( GLFW_OPENED ))
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        glfwGetWindowSize(aeonWindowHandle,&width,&height);
+        glfwSetCursorPos(aeonWindowHandle,(double)width,(double)height);
     }
 }
