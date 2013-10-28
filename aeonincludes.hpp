@@ -5,7 +5,7 @@
 
 // OpenGL Includes
 #include <GL/glew.h>
-#include <GL/glfw.h>
+#include <glfw/glfw3.h>
 #include <glm/glm.hpp>
 
 // Engine Includes

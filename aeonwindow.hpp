@@ -20,5 +20,7 @@ namespace aeon
     void centerCursor();            // Centers both the underlying mouse AND the displayed mouse
 
     bool windowShouldClose();
+
+    GLFWwindow* getMainWindowHandle();
 }
 #endif
