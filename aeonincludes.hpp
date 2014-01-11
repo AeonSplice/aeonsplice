@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <string>
+#include <sstream>
 
 // OpenGL Includes
 #include <GL/glew.h>
@@ -12,4 +13,8 @@
 #include "aeonplatform.hpp"
 #include "aeonwindow.hpp"
 #include "aeonconfig.hpp"
-//#include "AeonKeyboard.hpp"
+#include "aeonlog.hpp"
+#include "aeonstack.hpp"
+#include "aeoninput.hpp"
+#include "aeonboxstate.hpp"
+#include "aeontrianglestate.hpp"

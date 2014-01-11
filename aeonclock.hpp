@@ -1,9 +1,13 @@
 ﻿#ifndef _AEONCLOCK_
 #define _AEONCLOCK_
+#include <glfw/glfw3.h>
 
-double getCurrentTimeMilli()
+namespace aeon
 {
-    return glfwGetTime();
+    double getCurrentTimeMilli()
+    {
+        return glfwGetTime();
+    }
 }
 
 #endif

@@ -1,6 +1,7 @@
 #include <string>
 #include <sstream>
 #include <glfw/glfw3.h>
+#include "aeonconfig.hpp"
 #include "aeonwindow.hpp"
 namespace aeon
 {
@@ -49,6 +50,18 @@ namespace aeon
         }
     }
 
+    void setDecorated(bool isDecorated)
+    {
+        if(isDecorated)
+        {
+            glfwWindowHint(GLFW_DECORATED, GL_TRUE);
+        }
+        else
+        {
+            glfwWindowHint(GLFW_DECORATED, GL_FALSE);
+        }
+    }
+
     /*bool openWindow(std::string title)
     {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -71,9 +84,16 @@ namespace aeon
         }
     }*/
 
-    bool openWindow(std::string title,int width,int height,bool fullscreen)
+    bool openWindow(std::string title,int width,int height,bool fullscreen,bool useCoreProfile)
     {
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        if(useCoreProfile)
+        {
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        }
+        else
+        {
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE);
+        }
         GLFWmonitor* prim = glfwGetPrimaryMonitor();
         GLFWwindow* mainWindow;
         if(fullscreen)
@@ -106,45 +126,30 @@ namespace aeon
         }
     }
 
-    bool openWindow(config &settings)
+    bool openWindow(config * settings)
     {
-        std::string title = settings.getValue("graphics","title");
-        std::string fullscreen = settings.getValue("graphics","fullscreen");
-        std::string width = settings.getValue("graphics","width");
-        std::string height = settings.getValue("graphics","height");
-        if(title=="")
+        std::string wtfIsWrongWithMyCompiler = "Default Title";
+        std::string title = initKeyPair(settings, "graphics", "title", wtfIsWrongWithMyCompiler);
+        bool fullscreen = initKeyPair(settings, "graphics", "fullscreen", false);
+        int width = initKeyPair(settings, "graphics", "width", 800);
+        int height = initKeyPair(settings, "graphics", "height", 600);
+        wtfIsWrongWithMyCompiler = "coreProfile";
+        std::string profile = initKeyPair(settings, "debug", "profile", wtfIsWrongWithMyCompiler);
+        bool coreProf;
+        if(profile == "coreProfile")
         {
-            title="Default Title";
-            settings.setKeyValue("graphics","title","Default Title");
+            coreProf = true;
         }
-        int iWidth,iHeight;
-        bool fullsrn;
-        if(fullscreen == "true" || fullscreen == "1")
+        else if(profile == "anyProfile")
         {
-            fullsrn=true;
-        }
-        else if(fullscreen=="false" || fullscreen=="0")
-        {
-            fullsrn=false;
+            coreProf = false;
         }
         else
         {
-            fullsrn=false;
-            settings.setKeyValue("graphics","fullscreen","false");
+            coreProf = true;
+            settings->setKeyValue("debug","profile","coreProfile");
         }
-        std::istringstream iws(width);
-        std::istringstream ihs(height);
-        if(!(iws>>iWidth))
-        {
-            iWidth=800;
-            settings.setKeyValue("graphics","width","800");
-        }
-        if(!(ihs>>iHeight))
-        {
-            iHeight=600;
-            settings.setKeyValue("graphics","height","600");
-        }
-        return openWindow(title,iWidth,iHeight,fullsrn);
+        return openWindow(title,width,height,fullscreen,coreProf);
     }
 
     bool windowShouldClose()
@@ -159,17 +164,64 @@ namespace aeon
         }
     }
 
+    void getMousePos(int * x, int * y)
+    {
+        double width,height;
+        glfwGetCursorPos(aeonWindowHandle,&width,&height);
+        *x = (int)width;
+        *y = (int)height;
+    }
+    void getMousePos(double * x, double * y)
+    {
+        glfwGetCursorPos(aeonWindowHandle,x,y);
+    }
+
+    void setMousePos(int x,int y)
+    {
+        glfwSetCursorPos(aeonWindowHandle,(double)x,(double)y);
+    }
+    void setMousePos(double x,double y)
+    {
+        glfwSetCursorPos(aeonWindowHandle,x,y);
+    }
+
     void centerMouse()
     {
         int width,height;
         glfwGetWindowSize(aeonWindowHandle,&width,&height);
-        glfwSetCursorPos(aeonWindowHandle,(double)width,(double)height);
+        glfwSetCursorPos(aeonWindowHandle,(double)(width/2),(double)(height/2));
     }
 
-    void centerCursor()
+    void hideCursor(bool hide)
+    {
+        if(hide)
+        {
+            glfwSetInputMode(aeonWindowHandle,GLFW_CURSOR,GLFW_CURSOR_HIDDEN);
+        }
+        else
+        {
+            glfwSetInputMode(aeonWindowHandle,GLFW_CURSOR,GLFW_CURSOR_NORMAL);
+        }
+    }
+
+    float getWindowWidth()
     {
         int width,height;
         glfwGetWindowSize(aeonWindowHandle,&width,&height);
-        glfwSetCursorPos(aeonWindowHandle,(double)width,(double)height);
+        return width;
+    }
+    float getWindowHeight()
+    {
+        int width,height;
+        glfwGetWindowSize(aeonWindowHandle,&width,&height);
+        return height;
+    }
+    float getWindowRatio()
+    {
+        int width,height;
+        float output;
+        glfwGetWindowSize(aeonWindowHandle,&width,&height);
+        output = width/height;
+        return output;
     }
 }

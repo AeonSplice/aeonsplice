@@ -1,8 +1,10 @@
 ﻿#include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 #include <map>
+#include "aeonplatform.hpp"
 #include "aeonconfig.hpp"
 
 namespace aeon
@@ -390,10 +392,77 @@ namespace aeon
             return false;
         }
     }
-    std::string getDefaultConfigString()
+    int initKeyPair(config * settings, std::string section, std::string key, int defaultValue)
     {
-        std::string result;
-
-        return result;
+        if(settings->exists(section,key))
+        {
+            std::istringstream input(settings->getValue(section,key));
+            int output;
+            if(!(input >> output))
+            {
+                settings->setKeyValue(section,key,toString(defaultValue));
+                return defaultValue;
+            }
+            else
+            {
+                return output;
+            }
+        }
+        else
+        {
+            settings->addKeyValue(section,key,toString(defaultValue));
+            return defaultValue;
+        }
+    }
+    bool initKeyPair(config * settings, std::string section, std::string key, bool defaultValue)
+    {
+        if(settings->exists(section,key))
+        {
+            std::string value = settings->getValue(section,key);
+            if(value == "true" || value == "1")
+            {
+                return true;
+            }
+            else if(value == "false" || value == "0")
+            {
+                return false;
+            }
+            else
+            {
+                if(defaultValue)
+                {
+                    settings->setKeyValue(section,key,"true");
+                }
+                else
+                {
+                    settings->setKeyValue(section,key,"false");
+                }
+                return defaultValue;
+            }
+        }
+        else
+        {
+            if(defaultValue)
+            {
+                settings->addKeyValue(section,key,"true");
+            }
+            else
+            {
+                settings->addKeyValue(section,key,"false");
+            }
+            return defaultValue;
+        }
+    }
+    std::string initKeyPair(config * settings, std::string section, std::string key, std::string defaultValue)
+    {
+        if(settings->exists(section,key))
+        {
+            return settings->getValue(section,key);
+        }
+        else
+        {
+            settings->addKeyValue(section,key,defaultValue);
+            return defaultValue;
+        }
     }
 }

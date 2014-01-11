@@ -1,17 +1,18 @@
 #define GLEW_STATIC
 #define EXIT_FAILURE -1
 #define EXIT_SUCCESS 0
-#include "AeonIncludes.hpp"
+#include "aeonincludes.hpp"
 using namespace std;
+using namespace aeon;
 
-bool init();
+bool init(int argc, char *argv[]);
 void load();
 bool isRunning();
 void render();
 void cleanUp();
 
-aeon::config * settingsPointer;
-//aeon::statestack stack;
+config * settingsPointer;
+aeonstack * myStack;
 
 GLuint vertexbuffer;
 
@@ -19,105 +20,116 @@ int main(int argc, char *argv[])
 {
     // Initilizes underlying API's and retrieves the configuration file
     cout << "INFO: Initilizing..." << endl;
-    if(!init())
+    if(!init(argc, argv))
     {
-        cout << "FATAL: Failure to initilize." << endl;
+        log("FATAL: Failure to initilize.");
         return EXIT_FAILURE;
     }
     // Loads the assets required at startup (intro animation, main menu textures, first rendering objects, etc)
-    cout << "INFO: Loading assets..." << endl;
+    log("INFO: Loading assets...");
     load();
     // Run the main game loop
-    cout << "INFO: Running..." << endl;
+    log("INFO: Running...");
 	while(isRunning())
 	{
         // Should render current context (main menu, etc)
 		render();
 	}
-    cout << "INFO: Cleaning up..." << endl;
+    log("INFO: Cleaning up...");
     // Terminates underlying APIs and releases all memory
 	cleanUp();
-    cout << "INFO: Exiting successfully." << endl;
+    log("INFO: Exiting successfully.");
     // Everything ran and didn't throw an error, return 0 (successful)
 	return EXIT_SUCCESS;
 }
 
 void render()
 {
-    glClear( GL_COLOR_BUFFER_BIT );
-    // DRAWING CODE BELOW
-
-    // 1rst attribute buffer : vertices
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glVertexAttribPointer(
-       0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-       3,                  // size
-       GL_FLOAT,           // type
-       GL_FALSE,           // normalized?
-       0,                  // stride
-       (void*)0            // array buffer offset
-    );
-
-    // Draw the triangle !
-    glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
-
-    glDisableVertexAttribArray(0);
-
-    //DRAWING CODE ABOVE
-    glfwPollEvents();
-    glfwSwapBuffers(aeon::getMainWindowHandle());
+    myStack->update();
+    myStack->render();
 }
-
 void load()
 {
-    GLuint VertexArrayID;
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
-    static const GLfloat g_vertex_buffer_data[] =
-    {
-       -1.0f, -1.0f, 0.0f,
-       1.0f, -1.0f, 0.0f,
-       0.0f,  1.0f, 0.0f,
-    };
-
-    // Generate 1 buffer, put the resulting identifier in vertexbuffer
-    glGenBuffers(1, &vertexbuffer);
-
-    // The following commands will talk about our 'vertexbuffer' buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-
-    // Give our vertices to OpenGL.
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-    aeon::centerCursor();
+    myStack = new aeonstack();
+    boxstate * box;
+    trianglestate * triangle;
+    box = new boxstate();
+    triangle = new trianglestate();
+    myStack->push(triangle);
+    myStack->push(box);
+    centerMouse();
 }
 
-bool init()
+void error_callback(int error, const char* description)
 {
-    //aeon::config settings;
-    settingsPointer = new aeon::config();
-    if(!(settingsPointer->loadFromFile((aeon::getUserDir())+"\\.aeonsplice\\settings.ini")))
+    string temp = "GLFW ERROR #"+toString(error)+": "+string(description);
+    log(temp);
+}
+
+bool init(int argc, char *argv[])
+{
+    setLogFile(getUserDir()+"\\.aeonsplice\\log.txt");
+    settingsPointer = new config();
+    if(!(settingsPointer->loadFromFile((getUserDir())+"\\.aeonsplice\\settings.ini")))
     {
-        fprintf( stderr, "WARNING: Failed to load config.\n" );
+        log("WARNING: Failed to load config.");
     }
-    //settingsPointer->print();
+    getLogSettings(settingsPointer);
+    getInputSettings(settingsPointer);
+    glfwSetErrorCallback(error_callback);
 	// Initialise GLFW (OpenGL), and any other APIs (OpenAL?)
-	if( !aeon::APIInit() )
+	if( !APIInit() )
 	{
-		fprintf( stderr, "FATAL: Failed to initialize underlying API(s).\n" );
+		log("FATAL: Failed to initialize underlying API(s).");
 		return false;
 	}
-    // Set openGL version to 4.3
-    aeon::setGLVersion(4,3);
-    // Set anti-aliasing to 4 samples.
-    aeon::setFSAA(4);
-    // Disable resizing the window. (Prevent user from breaking stuff)
-	aeon::setResizable(false);
-    // Attempt to open window context
-    if( !aeon::openWindow(*settingsPointer) )
+	// Command line argument handling
+	if(argc > 1)
     {
-        fprintf( stderr, "FATAL: Failed to open OpenGL window.\n" );
-		aeon::APITerminate();
+        for(int argIter = 1; argIter < argc; argIter++)
+        {
+            stringstream argStream(argv[argIter]);
+            string currentArg;
+            argStream >> currentArg;
+            string temp = "INFO: Argv[";
+            temp+=toString(argIter);
+            temp+="] = ";
+            temp+=argv[argIter];
+            log(temp);
+            if(currentArg == "-useAnyProfile")
+            {
+                settingsPointer->setKeyValue("debug","profile","anyProfile");
+            }
+            else if(currentArg == "-useCoreProfile")
+            {
+                settingsPointer->setKeyValue("debug","profile","coreProfile");
+            }
+            else if(currentArg == "-fullscreen")
+            {
+                settingsPointer->setKeyValue("graphics","fullscreen","true");
+            }
+        }
+    }
+    else
+    {
+        log("INFO: No command line args provided.");
+    }
+    int fsaa = initKeyPair(settingsPointer, "graphics", "anti-aliasing", 4);
+    bool resizable = initKeyPair(settingsPointer, "graphics", "resizable", false);
+    bool decorated = initKeyPair(settingsPointer, "graphics", "decorated", true);
+    // Set openGL version to 4.3
+    setGLVersion(3,3);
+    // Set anti-aliasing to X samples.
+    setFSAA(fsaa);
+    // Disable resizing the window. (Prevent user from breaking stuff)
+	setResizable(resizable);
+	// Disable window decorations (border, widgets, etc)
+	setDecorated(decorated);
+    // Attempt to open window context
+    if( !openWindow(settingsPointer) )
+    {
+        log("FATAL: Failed to open OpenGL window.");
+		APITerminate();
 		return false;
     }
 
@@ -128,37 +140,60 @@ bool init()
     GlewInitResult = glewInit();
     if (GLEW_OK != GlewInitResult)
     {
-        fprintf(stderr, "ERROR: %s\n", glewGetErrorString(GlewInitResult));
+        if(settingsPointer->exists("debug","isDebugMode"))
+        {
+            string temp = settingsPointer->getValue("debug","isDebugMode");
+            if(temp == "true" || temp == "1")
+            {
+                FILE* logFile = getLogFile();
+                fprintf(logFile,"%s - INFO: OpenGL Version: %s\n",currentDateTime().c_str(),glGetString(GL_VERSION));
+                fclose(logFile);
+            }
+        }
+        else
+        {
+            FILE* logFile = getLogFile();
+            fprintf(logFile,"%s - INFO: OpenGL Version: %s\n",currentDateTime().c_str(),glGetString(GL_VERSION));
+            fclose(logFile);
+        }
         return false;
     }
-
-    fprintf(stdout,"INFO: OpenGL Version: %s\n",glGetString(GL_VERSION));
-
-    glClearColor(0.0f, 0.4f, 0.8f, 0.5f);
-	aeon::centerCursor();
-
-    // Init camera with default settings
-    //initCamera();
+    if(settingsPointer->exists("debug","isDebugMode"))
+    {
+        string temp = settingsPointer->getValue("debug","isDebugMode");
+        if(temp == "true" || temp == "1")
+        {
+            FILE* logFile = getLogFile();
+            fprintf(logFile,"%s - INFO: OpenGL Version: %s\n",currentDateTime().c_str(),glGetString(GL_VERSION));
+            fclose(logFile);
+        }
+    }
+    else
+    {
+        FILE* logFile = getLogFile();
+        fprintf(logFile,"%s - INFO: OpenGL Version: %s\n",currentDateTime().c_str(),glGetString(GL_VERSION));
+        fclose(logFile);
+    }
     return true;
 }
 
 void cleanUp()
 {
-    aeon::APITerminate();
-    settingsPointer->print();
-    if(!settingsPointer->saveToFile((aeon::getUserDir())+"/.aeonsplice/settings.ini"))
+    myStack->cleanUp();
+    APITerminate();
+    if(!settingsPointer->saveToFile((getUserDir())+"/.aeonsplice/settings.ini"))
     {
-        cout << "WARNING: Failed to save configuration!" << endl;
+        log("WARNING: Failed to save configuration!");
     }
     else
     {
-        cout << "INFO: Successfully saved configuration." << endl;
+        log("INFO: Successfully saved configuration.");
     }
 }
 
 bool isRunning()
 {
-    if(aeon::windowShouldClose())
+    if(windowShouldClose())
     {
         return false;
     }

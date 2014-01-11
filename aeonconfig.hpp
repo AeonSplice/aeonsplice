@@ -2,6 +2,7 @@
 #define _AEONCONFIG_
 #include <vector>
 #include <map>
+#include <string>
 namespace aeon
 {
     class config
@@ -41,7 +42,9 @@ namespace aeon
         bool isignorewarnings;
         std::map< std::string, std::map<std::string,std::string> > data;
     };
-    std::string getDefaultConfigString();
+    int initKeyPair(config * settings, std::string section, std::string key, int defaultValue);
+    bool initKeyPair(config * settings, std::string section, std::string key, bool defaultValue);
+    std::string initKeyPair(config * settings, std::string section, std::string key, std::string defaultValue);
 }
 
 #endif
