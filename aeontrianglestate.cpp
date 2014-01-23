@@ -12,6 +12,7 @@
 #include "aeonplatform.hpp"
 #include "aeoncamera.hpp"
 #include "aeoninput.hpp"
+#include "aeonlog.hpp"
 #include "aeontrianglestate.hpp"
 
 using namespace glm;
@@ -23,7 +24,7 @@ namespace aeon
         // do nothing
     }
 
-    void trianglestate::init()
+    void trianglestate::init(aeonstack * currentStack)
     {
         if(!ready)
         {
@@ -36,6 +37,11 @@ namespace aeon
             // Create and compile our GLSL program from the shaders
             programID = aeon::loadShaders( "SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader" );
 
+            if(programID == 0)
+            {
+                //aeon::log("ERROR: Failed to load program for aeontrianglestate");
+                return;
+            }
 
             static const GLfloat g_vertex_buffer_data[] = {
                 -1.0f, -1.0f, 0.0f,
@@ -100,7 +106,7 @@ namespace aeon
     }
     void trianglestate::processInput()
     {
-        if(glfwGetKey(getMainWindowHandle(),GLFW_KEY_ESCAPE))
+        if(isKeyDown("ESCAPE"))
         {
             glfwSetWindowShouldClose(getMainWindowHandle(),GL_TRUE);
         }

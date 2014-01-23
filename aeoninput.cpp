@@ -21,6 +21,8 @@ namespace aeon
         setInput("CAMERA_RIGHT",initKeyPair(settings, "input", "CAMERA_RIGHT", GLFW_KEY_D));
         setInput("CAMERA_UP",initKeyPair(settings, "input", "CAMERA_UP", GLFW_KEY_Q));
         setInput("CAMERA_DOWN",initKeyPair(settings, "input", "CAMERA_DOWN", GLFW_KEY_Z));
+        setInput("CLOSE",initKeyPair(settings, "input", "CLOSE", GLFW_KEY_ESCAPE));
+        setInput("DERP",initKeyPair(settings, "input", "DERP", GLFW_KEY_F12));
     }
     void setInput(string key,int value)
     {

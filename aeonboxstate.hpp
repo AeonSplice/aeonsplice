@@ -8,7 +8,7 @@ namespace aeon
         public:
             boxstate();
 
-            virtual void init();
+            virtual void init(aeonstack * currentStack);
             virtual void cleanUp();
 
             virtual void pause();
@@ -33,6 +33,7 @@ namespace aeon
             glm::mat4 MVP;
             GLuint Texture;
             GLuint TextureID;
+            aeonstack * thisStack;
     };
 }
 #endif

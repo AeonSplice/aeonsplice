@@ -4,5 +4,6 @@ namespace aeon
 {
     std::string getUserDir();
     std::string toString(int number);
+    void createAeonDirectories();
 }
 #endif

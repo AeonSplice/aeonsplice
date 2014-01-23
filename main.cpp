@@ -14,8 +14,6 @@ void cleanUp();
 config * settingsPointer;
 aeonstack * myStack;
 
-GLuint vertexbuffer;
-
 int main(int argc, char *argv[])
 {
     // Initilizes underlying API's and retrieves the configuration file
@@ -51,10 +49,8 @@ void render()
 void load()
 {
     myStack = new aeonstack();
-    boxstate * box;
-    trianglestate * triangle;
-    box = new boxstate();
-    triangle = new trianglestate();
+    boxstate * box = new boxstate();
+    trianglestate * triangle = new trianglestate();
     myStack->push(triangle);
     myStack->push(box);
     centerMouse();
@@ -68,6 +64,7 @@ void error_callback(int error, const char* description)
 
 bool init(int argc, char *argv[])
 {
+    createAeonDirectories();
     setLogFile(getUserDir()+"\\.aeonsplice\\log.txt");
     settingsPointer = new config();
     if(!(settingsPointer->loadFromFile((getUserDir())+"\\.aeonsplice\\settings.ini")))

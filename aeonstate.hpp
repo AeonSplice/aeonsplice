@@ -2,10 +2,11 @@
 #define _AEONSTATE_
 namespace aeon
 {
+    class aeonstack;
     class aeonstate
     {
     public:
-        virtual void init() = 0;
+        virtual void init(aeon::aeonstack * currentStack) = 0;
         virtual void cleanUp() = 0;
 
         virtual void pause() = 0;

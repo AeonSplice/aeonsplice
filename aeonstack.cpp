@@ -17,7 +17,7 @@ namespace aeon
         // my race condition sense is tingling
         if(!state->isReady())
         {
-            state->init();
+            state->init(this);
         }
         aeonstack::statestack.push_back(state);
     }
@@ -50,12 +50,12 @@ namespace aeon
             {
                 for(unsigned int stateIter = 0; stateIter<aeonstack::statestack.size(); stateIter++)
                 {
-                    aeonstack::statestack.at(stateIter)->render();
+                    aeonstack::statestack.at(stateIter)->update();
                 }
             }
             else
             {
-                aeonstack::statestack.at(0)->render();
+                aeonstack::statestack.at(0)->update();
             }
         }
     }

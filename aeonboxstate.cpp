@@ -12,6 +12,8 @@
 #include "aeonplatform.hpp"
 #include "aeoncamera.hpp"
 #include "aeoninput.hpp"
+#include "aeonlog.hpp"
+#include "aeonstack.hpp"
 #include "aeonboxstate.hpp"
 
 using namespace glm;
@@ -23,7 +25,7 @@ namespace aeon
         // do nothing
     }
 
-    void boxstate::init()
+    void boxstate::init(aeonstack * currentStack)
     {
         if(!ready)
         {
@@ -43,6 +45,12 @@ namespace aeon
 
             // Create and compile our GLSL program from the shaders
             programID = aeon::loadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
+
+            if(programID == 0)
+            {
+                //aeon::log("ERROR: Failed to load program for aeonboxstate");
+                return;
+            }
 
             MatrixID = glGetUniformLocation(programID, "MVP");
 
@@ -225,9 +233,13 @@ namespace aeon
     }
     void boxstate::processInput()
     {
-        if(glfwGetKey(getMainWindowHandle(),GLFW_KEY_ESCAPE))
+        if(isKeyDown("CLOSE"))
         {
             glfwSetWindowShouldClose(getMainWindowHandle(),GL_TRUE);
+        }
+        if(isKeyDown("DERP"))
+        {
+            thisStack->pop();
         }
         computeCameraMatrices();
     }

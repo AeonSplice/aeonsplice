@@ -2,6 +2,7 @@
 #include <string>
 #include <stdlib.h>
 #include <sstream>
+
 #include "aeonplatform.hpp"
 
 namespace aeon
@@ -28,5 +29,9 @@ namespace aeon
        std::stringstream ss;//create a stringstream
        ss << number;//add number to the stream
        return ss.str();//return a string with the contents of the stream
+    }
+    void createAeonDirectories()
+    {
+        system("cmd /c mkdir %userprofile%\\.aeonsplice");
     }
 }

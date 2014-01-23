@@ -1,5 +1,7 @@
 // STD
 #include <string>
+#include <stdio.h>
+#include <iostream>
 // OpenGL
 #include <glfw/glfw3.h>
 #include <glm/glm.hpp>
@@ -81,7 +83,7 @@ namespace aeon
 
     void computeCameraMatrices()
     {
-        // glfwGetTime is called only once, the first time this function is called (this is because of the static declaration, which makes the variable persist)
+        // getCurrentTimeMilli is called only once, the first time this function is called (this is because of the static declaration, which makes the variable persist)
         static double lastTime = getCurrentTimeMilli();
 
         // Compute time difference between current and last frame
@@ -120,13 +122,13 @@ namespace aeon
         }
 
         // Bounds Check Pitch/Roll/Yaw
-        if(cameraPitch>180.0f)
+        if(cameraPitch>1.57f)
         {
-            cameraPitch = 180.0f;
+            cameraPitch = 1.57f;
         }
-        else if(cameraPitch<0.0f)
+        else if(cameraPitch<-1.57f)
         {
-            cameraPitch = 0.0f;
+            cameraPitch = -1.57f;
         }
 
 
@@ -193,6 +195,11 @@ namespace aeon
         {
             FoV=minimumFoV;
         }
+
+        /*std::cout << "Pitch: ";
+        std::cout << cameraPitch << std::endl;
+        std::cout << "Yaw: ";
+        std::cout << cameraYaw << std::endl;*/
 
         // Projection matrix : X° Field of View, display ratio, display range : 0.1 unit <-> 100 units
         ProjectionMatrix = glm::perspective(FoV, getWindowRatio(), 0.1f, 100.0f);

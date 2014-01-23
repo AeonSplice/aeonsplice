@@ -8,7 +8,7 @@ namespace aeon
         public:
             trianglestate();
 
-            virtual void init();
+            virtual void init(aeonstack * currentStack);
             virtual void cleanUp();
 
             virtual void pause();
