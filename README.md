@@ -1,4 +1,6 @@
-aeonsplice
+Aeon Splice Readme
 ==========
 
-Aeon Splice Repo?
+Welcome to the readme.
+
+TODO: Entire readme. kthx
