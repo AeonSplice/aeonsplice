@@ -11,174 +11,142 @@ bool isRunning();
 void render();
 void cleanUp();
 
-config * settingsPointer;
-aeonstack * myStack;
+aeonconfig settings;
+aeonscene sceneManager;
 
 int main(int argc, char *argv[])
 {
-    // Initilizes underlying API's and retrieves the configuration file
-    cout << "INFO: Initilizing..." << endl;
     if(!init(argc, argv))
     {
-        log("FATAL: Failure to initilize.");
+        log("FATAL: Failed to initialize");
         return EXIT_FAILURE;
     }
-    // Loads the assets required at startup (intro animation, main menu textures, first rendering objects, etc)
+    else
+    {
+        log("INFO: Successfully initialized");
+    }
     log("INFO: Loading assets...");
     load();
-    // Run the main game loop
     log("INFO: Running...");
 	while(isRunning())
 	{
-        // Should render current context (main menu, etc)
 		render();
 	}
     log("INFO: Cleaning up...");
-    // Terminates underlying APIs and releases all memory
 	cleanUp();
-    log("INFO: Exiting successfully.");
-    // Everything ran and didn't throw an error, return 0 (successful)
+    log("INFO: Exiting successfully");
 	return EXIT_SUCCESS;
 }
 
 void render()
 {
-    myStack->update();
-    myStack->render();
+    sceneManager.processInput();
+    // Checks to see if the game logic is behind schedule. (needsUpdate() should return false if time since last render is greater than some amount. 1s? 16ms?)
+    while(sceneManager.needsUpdate())
+    {
+        sceneManager.update();
+    }
+    sceneManager.render();
 }
 void load()
 {
-    myStack = new aeonstack();
-    boxstate * box = new boxstate();
-    trianglestate * triangle = new trianglestate();
-    myStack->push(triangle);
-    myStack->push(box);
-    centerMouse();
-}
-
-void error_callback(int error, const char* description)
-{
-    string temp = "GLFW ERROR #"+toString(error)+": "+string(description);
-    log(temp);
+    sceneManager.load();
 }
 
 bool init(int argc, char *argv[])
 {
-    createAeonDirectories();
-    setLogFile(getUserDir()+"\\.aeonsplice\\log.txt");
-    settingsPointer = new config();
-    if(!(settingsPointer->loadFromFile((getUserDir())+"\\.aeonsplice\\settings.ini")))
+    initAeonDirectories();
+    setLogFile(getAeonDir()+"log.txt");
+    settings = new aeonconfig();
+    
+    // TODO: Replace with try{}catch{}
+    if(!(settings.loadFromFile((getAeonDir())+"settings.ini")))
     {
-        log("WARNING: Failed to load config.");
+        log("WARNING: Failed to load config");
     }
-    getLogSettings(settingsPointer);
-    getInputSettings(settingsPointer);
-    glfwSetErrorCallback(error_callback);
-	// Initialise GLFW (OpenGL), and any other APIs (OpenAL?)
-	if( !APIInit() )
-	{
-		log("FATAL: Failed to initialize underlying API(s).");
-		return false;
-	}
+    
+    getLogSettings(&settings);
+    getInputSettings(&settings);
+    
 	// Command line argument handling
 	if(argc > 1)
     {
+        vector<string> arguments;
         for(int argIter = 1; argIter < argc; argIter++)
         {
             stringstream argStream(argv[argIter]);
-            string currentArg;
+            string arg;
             argStream >> currentArg;
-            string temp = "INFO: Argv[";
-            temp+=toString(argIter);
-            temp+="] = ";
-            temp+=argv[argIter];
-            log(temp);
-            if(currentArg == "-useAnyProfile")
+            arguments.push_back(arg);
+        }
+        for(int argIter = 0; argIter < arguments.size(); argIter++)
+        {
+            if(toBoolean(settings.getValue("debug","printArgs")))
             {
-                settingsPointer->setKeyValue("debug","profile","anyProfile");
+                string temp = "INFO: Argv[";
+                temp+=toString(argIter);
+                temp+="] = ";
+                temp+=arguments.at(argIter);
+                log(temp);
             }
-            else if(currentArg == "-useCoreProfile")
+            // does this properly skip the next argument?
+            if(arguments.at(argIter) == "-profile")
             {
-                settingsPointer->setKeyValue("debug","profile","coreProfile");
+                // TODO: and next argument is valid
+                if( (argIter+1) < arguments.size() )
+                {
+                    argIter++;
+                    settings.setKeyValue("debug","profile",arguments.at(argIter));
+                }
+                // TODO: else if enough args and argument is NOT valid
+                else
+                {
+                    log("WARNING: Did not provide value for \"-profile\", ignoring");
+                }
             }
-            else if(currentArg == "-fullscreen")
+            else if(arguments.at(argIter) == "-fullscreen")
             {
-                settingsPointer->setKeyValue("graphics","fullscreen","true");
+                settings.setKeyValue("graphics","fullscreen","true");
+            }
+            else if(arguments.at(argIter) == "-debug")
+            {
+                settings.setKeyValue("debug","debugging","true");
+            }
+            else
+            {
+                log("WARNING: Unknown argument \""+arguments.at(argIter)+"\"";
             }
         }
     }
     else
     {
-        log("INFO: No command line args provided.");
+        if(toBoolean(settings.getValue("debug","printArgs")))
+            log("INFO: No command line args provided.");
     }
-    int fsaa = initKeyPair(settingsPointer, "graphics", "anti-aliasing", 4);
-    bool resizable = initKeyPair(settingsPointer, "graphics", "resizable", false);
-    bool decorated = initKeyPair(settingsPointer, "graphics", "decorated", true);
-    // Set openGL version to 4.3
-    setGLVersion(3,3);
-    // Set anti-aliasing to X samples.
-    setFSAA(fsaa);
-    // Disable resizing the window. (Prevent user from breaking stuff)
-	setResizable(resizable);
-	// Disable window decorations (border, widgets, etc)
-	setDecorated(decorated);
-    // Attempt to open window context
-    if( !openWindow(settingsPointer) )
-    {
-        log("FATAL: Failed to open OpenGL window.");
-		APITerminate();
+    
+    // Initialize underlying graphics and audio engines. (GLFW, glew, Ogre3d, that kind of thing)
+	if( !apiInit() )
+	{
+		log("FATAL: Failed to initialize underlying API(s)");
 		return false;
-    }
-
-    // GLEW must be declared after the GLFW window context is available :(
-
-	glewExperimental = true; // Needed for core profile
-    GLenum GlewInitResult;
-    GlewInitResult = glewInit();
-    if (GLEW_OK != GlewInitResult)
+	}
+    
+    // TODO: Replace with try{}catch{}
+    if( !sceneManager.openContext(&settings) )
     {
-        if(settingsPointer->exists("debug","isDebugMode"))
-        {
-            string temp = settingsPointer->getValue("debug","isDebugMode");
-            if(temp == "true" || temp == "1")
-            {
-                FILE* logFile = getLogFile();
-                fprintf(logFile,"%s - INFO: OpenGL Version: %s\n",currentDateTime().c_str(),glGetString(GL_VERSION));
-                fclose(logFile);
-            }
-        }
-        else
-        {
-            FILE* logFile = getLogFile();
-            fprintf(logFile,"%s - INFO: OpenGL Version: %s\n",currentDateTime().c_str(),glGetString(GL_VERSION));
-            fclose(logFile);
-        }
+        log("FATAL: Failed to open OpenGL context");
+        apiTerminate();
         return false;
     }
-    if(settingsPointer->exists("debug","isDebugMode"))
-    {
-        string temp = settingsPointer->getValue("debug","isDebugMode");
-        if(temp == "true" || temp == "1")
-        {
-            FILE* logFile = getLogFile();
-            fprintf(logFile,"%s - INFO: OpenGL Version: %s\n",currentDateTime().c_str(),glGetString(GL_VERSION));
-            fclose(logFile);
-        }
-    }
-    else
-    {
-        FILE* logFile = getLogFile();
-        fprintf(logFile,"%s - INFO: OpenGL Version: %s\n",currentDateTime().c_str(),glGetString(GL_VERSION));
-        fclose(logFile);
-    }
+    
     return true;
 }
 
 void cleanUp()
 {
-    myStack->cleanUp();
+    sceneManager.closeContext();
     APITerminate();
-    if(!settingsPointer->saveToFile((getUserDir())+"/.aeonsplice/settings.ini"))
+    if(!settings.saveToFile((getAeonDir())+"settings.ini"))
     {
         log("WARNING: Failed to save configuration!");
     }
@@ -190,7 +158,7 @@ void cleanUp()
 
 bool isRunning()
 {
-    if(windowShouldClose())
+    if(sceneManager.shouldClose())
     {
         return false;
     }
