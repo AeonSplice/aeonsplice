@@ -60,7 +60,7 @@ bool init(int argc, char *argv[])
     settings = new aeonconfig();
     
     // TODO: Replace with try{}catch{}
-    if(!(settings.loadFromFile((getAeonDir())+"settings.ini")))
+    if(!(settings.loadFromFile(getAeonDir()+"settings.ini")))
     {
         log("WARNING: Failed to load config");
     }
@@ -146,7 +146,7 @@ void cleanUp()
 {
     sceneManager.closeContext();
     APITerminate();
-    if(!settings.saveToFile((getAeonDir())+"settings.ini"))
+    if(!settings.saveToFile(getAeonDir()+"settings.ini"))
     {
         log("WARNING: Failed to save configuration!");
     }
