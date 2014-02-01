@@ -1,14 +1,12 @@
 ﻿#ifndef _AEONCONFIG_
 #define _AEONCONFIG_
-#include <vector>
-#include <map>
-#include <string>
 namespace aeon
 {
-    class config
+    class Config
     {
     public:
-        config();
+        Config();
+        ~Config();
         /**
             Loads values from file/string, overwrites if values are prexisting. (overwriting not implemented yet...)
         */

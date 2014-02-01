@@ -1,4 +1,3 @@
-#define GLEW_STATIC
 #define EXIT_FAILURE -1
 #define EXIT_SUCCESS 0
 #include "aeonincludes.hpp"
@@ -11,13 +10,14 @@ bool isRunning();
 void render();
 void cleanUp();
 
-aeonconfig settings;
-aeonscene sceneManager;
+Config settings;
+Context contextManager;
 
 int main(int argc, char *argv[])
 {
     if(!init(argc, argv))
     {
+        apiTerminate();
         log("FATAL: Failed to initialize");
         return EXIT_FAILURE;
     }
@@ -40,24 +40,33 @@ int main(int argc, char *argv[])
 
 void render()
 {
-    sceneManager.processInput();
+    contextManager.processInput();
     // Checks to see if the game logic is behind schedule. (needsUpdate() should return false if time since last render is greater than some amount. 1s? 16ms?)
-    while(sceneManager.needsUpdate())
-    {
-        sceneManager.update();
-    }
-    sceneManager.render();
+    //while(contextManager.needsUpdate())
+    //{
+        contextManager.update();
+    //}
+    contextManager.render();
 }
 void load()
 {
-    sceneManager.load();
+    contextManager.load();
 }
 
 bool init(int argc, char *argv[])
 {
     initAeonDirectories();
     setLogFile(getAeonDir()+"log.txt");
-    settings = new aeonconfig();
+    settings = new Config();
+    
+    try
+    {
+        settings.loadFromFile(getAeonDir()+"settings.ini");
+    }
+    catch(...)
+    {
+        log("WARNING: Failed to load configuration at \""+getAeonDir()+"settings.ini\"");
+    }
     
     // TODO: Replace with try{}catch{}
     if(!(settings.loadFromFile(getAeonDir()+"settings.ini")))
@@ -131,12 +140,24 @@ bool init(int argc, char *argv[])
 		return false;
 	}
     
-    // TODO: Replace with try{}catch{}
-    if( !sceneManager.openContext(&settings) )
+    try
+    {
+        contextManager.openContext(&settings);
+    }
+    catch(...)
     {
         log("FATAL: Failed to open OpenGL context");
-        apiTerminate();
         return false;
+    }
+    
+    // This will attempt to init Glew (Tells us what extensions are available)
+    try
+    {
+        contextManager.processExtensions(&settings);
+    }
+    catch(...)
+    {
+        log("ERROR: Caught exception while initializing Glew.");
     }
     
     return true;
@@ -144,8 +165,8 @@ bool init(int argc, char *argv[])
 
 void cleanUp()
 {
-    sceneManager.closeContext();
-    APITerminate();
+    contextManager.closeContext();
+    apiTerminate();
     if(!settings.saveToFile(getAeonDir()+"settings.ini"))
     {
         log("WARNING: Failed to save configuration!");
@@ -158,7 +179,7 @@ void cleanUp()
 
 bool isRunning()
 {
-    if(sceneManager.shouldClose())
+    if(contextManager.shouldClose())
     {
         return false;
     }

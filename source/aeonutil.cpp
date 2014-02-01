@@ -1,9 +1,9 @@
-﻿#include <iostream>
+﻿#include "aeonutil.hpp"
+
+#include <iostream>
 #include <string>
 #include <stdlib.h>
 #include <sstream>
-
-#include "aeonplatform.hpp"
 
 namespace aeon
 {
