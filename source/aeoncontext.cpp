@@ -3,5 +3,12 @@
 
 namespace aeon
 {
-
+    void apiInit()
+    {
+    
+    }
+    void apiTerminate()
+    {
+    
+    }
 }

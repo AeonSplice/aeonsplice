@@ -56,7 +56,7 @@ void load()
 bool init(int argc, char *argv[])
 {
     initAeonDirectories();
-    setLogFile(getAeonDir()+"log.txt");
+    setLogFile(getAeonDir()+"debugging.log");
     settings = new Config();
     
     try

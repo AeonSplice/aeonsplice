@@ -7,27 +7,24 @@ namespace aeon
     class Context
     {
     public:
-        Context();
-        ~Context();
+        virtual void setContextHint(std::string hint, std::string value);
         
-        void setContextHint(std::string hint, std::string value);
+        virtual bool openContext();
+        virtual bool openContext(Config * settings);
+        virtual void closeContext();
         
-        bool openContext();
-        bool openContext(Config * settings);
-        void closeContext();
+        virtual void processExtensions(Config * settings);
+        virtual void load()=0;
         
-        void processExtensions(Config * settings);
-        void load();
+        virtual bool shouldClose();
+        virtual bool needsUpdate();
         
-        bool shouldClose();
-        bool needsUpdate();
-        
-        void processInput();
-        void update();
-        void render();
+        virtual void processInput();
+        virtual void update();
+        virtual void render();
     }
     
-    apiInit();
-    apiTerminate();
+    void apiInit();
+    void apiTerminate();
 }
 #endif

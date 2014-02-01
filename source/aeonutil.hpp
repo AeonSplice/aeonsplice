@@ -6,6 +6,7 @@ namespace aeon
     std::string getAeonDir();
     
     std::string toString(int number);
+    int toInt(std::string number);
     bool toBoolean(std::string boolean);
     
     void initAeonDirectories();
