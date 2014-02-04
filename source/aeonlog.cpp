@@ -64,7 +64,7 @@ namespace aeon
                 logFile = fopen(logLocation.c_str(),"a");
                 if(logFile==NULL)
                 {
-                    std::cout << "ERROR: Failed to write to log file." << std::endl;
+                    std::cout << "ERROR - Failed to write to log file." << std::endl;
                 }
                 else
                 {
@@ -85,6 +85,30 @@ namespace aeon
         else
         {
             std::cout << message << std::endl;
+        }
+    }
+    void log(string message, int mode)
+    {
+        if(mode == AEON_FATAL)
+        {
+            log("FATAL - "+message);
+        }
+        else if(mode == AEON_ERROR)
+        {
+            log("ERROR - "+message);
+        }
+        else if(mode == AEON_WARNING)
+        {
+            log("WARNING - "+message);
+        }
+        else if(mode == AEON_INFO)
+        {
+            log("INFO - "+message);
+        }
+        else
+        {
+            log("Tried to use invalid log mode \""+toString(mode)+"\"", AEON_WARNING);
+            log("UNKNOWN - "+message);
         }
     }
 }

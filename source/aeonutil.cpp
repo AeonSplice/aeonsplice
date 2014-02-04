@@ -1,22 +1,26 @@
 ﻿#include "aeonutil.hpp"
 
 #include <iostream>
+#include <cstdio>
 #include <string>
 #include <stdlib.h>
 #include <sstream>
+#include <windows.h>
+
+using namespace std;
 
 namespace aeon
 {
-    std::string getUserDir()
+    string getUserDir()
     {
         char* path;
         path = getenv("USERPROFILE");
         if(path!=NULL)
         {
-            std::stringstream temp;
-            std::string output;
+            stringstream temp;
+            string output;
             temp << path;
-            std::getline(temp,output);
+            getline(temp,output);
             return output;
         }
         else
@@ -24,14 +28,100 @@ namespace aeon
             return NULL;
         }
     }
-    std::string toString(int number)
+    string getAeonDir()
     {
-       std::stringstream ss;//create a stringstream
-       ss << number;//add number to the stream
-       return ss.str();//return a string with the contents of the stream
+        char* path;
+        path = getenv("APPDATA");
+        if(path!=NULL)
+        {
+            std::stringstream temp;
+            std::String output;
+            temp << path;
+            std::getline(temp,output);
+            output+="/.aeonsplice/";
+            return output;
+        }
+        else
+        {
+            // TODO: Throw error maybe?
+            return "./.aeonsplice/";
+        }
     }
-    void createAeonDirectories()
+
+    bool equals(string first, string second)
     {
-        system("cmd /c mkdir %userprofile%\\.aeonsplice");
+        transform(first.begin(), first.end(), first.begin(), ::tolower());
+        transform(second.begin(), second.end(), second.begin(), ::tolower());
+        if(first == second)
+            return true;
+        else
+            return false;
+    }
+
+    string toString(int number)
+    {
+       stringstream ss;
+       ss << number;
+       return ss.str();
+    }
+    string toString(bool boolean)
+    {
+        if(boolean)
+            return "true";
+        else
+            return "false";
+    }
+    int toInt(string number)
+    {
+        istringstream ss(number);
+        int output;
+        if(!(ss >> output))
+        {
+            throw invalid_argument;
+        }
+        else
+        {
+            return output;
+        }
+    }
+    bool toBoolean(std::string boolean)
+    {
+        if(equals(boolean,"true") || equals(boolean,"1"))
+        {
+            return true;
+        }
+        else if(equals(boolean,"false") || equals(boolean,"0"))
+        {
+            return false;
+        }
+        else
+        {
+            throw invalid_argument;
+        }
+    }
+    void initAeonDirectories()
+    {
+        if(CreateDirectory(getAeonDir(), NULL))
+        {
+            log("Succesfully initialized Aeon Splice directories.", AEON_INFO);
+        }
+        else
+        {
+            DWORD temp = GetLastError();
+            if(temp == ERROR_ALREADY_EXISTS)
+            {
+                log("Aeon Splice directories already initialized.", AEON_INFO);
+            }
+            else if(temp == ERROR_ACCESS_DENIED)
+            {
+                log("Access Denied", AEON_ERROR);
+                throw "403";
+            }
+            else if(temp == ERROR_PATH_NOT_FOUND)
+            {
+                log("AppData does not exist?", AEON_ERROR);
+                throw "404";
+            }
+        }
     }
 }

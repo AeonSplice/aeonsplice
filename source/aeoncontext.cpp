@@ -3,6 +3,11 @@
 
 namespace aeon
 {
+    virtual void Context::setContextHint(int hint, int value)
+    {
+        
+    }
+
     void apiInit()
     {
     

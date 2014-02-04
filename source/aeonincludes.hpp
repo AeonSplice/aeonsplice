@@ -3,14 +3,13 @@
 
 // Standard Includes
 #include <iostream>
-#include <stdio.h>
 #include <string>
 #include <sstream>
 
 // Engine Includes
-#include "aeonutil.hpp"
 #include "aeonconfig.hpp"
-#include "aeonlog.hpp"
 #include "aeoncontext.hpp"
+#include "aeonlog.hpp"
+#include "aeonutil.hpp"
 
 #endif // _AEONINCLUDES_
