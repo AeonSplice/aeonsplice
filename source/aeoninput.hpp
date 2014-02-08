@@ -1,10 +1,13 @@
 #ifndef _AEONINPUT_
 #define _AEONINPUT_
-#include "aeonconfig.hpp"
+
+#include <string>
 
 namespace aeon
 {
-    void getInputSettings(aeon::config * settings);
+    class Config;
+
+    void getInputSettings(Config * settings);
     void setInput(std::string key,int value);
     bool inputExists(std::string input);
     int getInput(std::string input);

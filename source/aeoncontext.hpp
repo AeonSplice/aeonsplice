@@ -1,5 +1,10 @@
-﻿#ifndef _AEONCONTEXT_
+#ifndef _AEONCONTEXT_
 #define _AEONCONTEXT_
+
+#include <GL/glfw3.h> // TODO: Isn't this a bad idea?
+
+#include <string>
+
 namespace aeon
 {
     class Config; // Prototype config so compiler doesn't flip tables
@@ -7,11 +12,11 @@ namespace aeon
     class Context
     {
     public:
-        Context();
         virtual ~Context();
 
-        virtual void setContextHint(std::string hint, std::string value);
-        virtual void setContextHint(int hint, int value);
+        virtual void setContextHint(std::string target, std::string hint);
+        virtual void setContextHint(int target, int hint);
+        virtual void setContextVersion(int major, int minor);
 
         virtual bool openContext();
         virtual bool openContext(Config * settings);
@@ -19,17 +24,17 @@ namespace aeon
 
         virtual void processExtensions(Config * settings);
         virtual void load()=0;
+        virtual void execute()=0;
 
         virtual bool shouldClose();
-        virtual bool needsUpdate();
+        virtual bool needsUpdate()=0;
 
-        virtual void processInput();
-        virtual void update();
-        virtual void render();
+        virtual void processInput()=0;
+        virtual void update()=0;
+        virtual void render()=0;
     protected:
         GLFWwindow* aWindowHandle;
-        Mutex aLock;
-    }
+    };
 
     void apiInit();
     void apiTerminate();

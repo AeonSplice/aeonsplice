@@ -1,9 +1,11 @@
+#include "aeoninput.hpp"
+
+#include <GL/glfw3.h>
+
 #include <string>
 #include <map>
-#include <glfw/glfw3.h>
-#include "aeonwindow.hpp"
+
 #include "aeonconfig.hpp"
-#include "aeoninput.hpp"
 
 using namespace std;
 
@@ -11,7 +13,7 @@ namespace aeon
 {
     map<string,int> knownInputs;
 
-    void getInputSettings(config * settings)
+    void getInputSettings(Config * settings)
     {
         setInput("LMB",initKeyPair(settings, "input", "LMB", GLFW_MOUSE_BUTTON_LEFT));
         setInput("RMB",initKeyPair(settings, "input", "RMB", GLFW_MOUSE_BUTTON_RIGHT));

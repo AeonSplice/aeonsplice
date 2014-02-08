@@ -1,5 +1,10 @@
 ﻿#ifndef _AEONCONFIG_
 #define _AEONCONFIG_
+
+#include <string>
+#include <vector>
+#include <map>
+
 namespace aeon
 {
     class Config
@@ -13,17 +18,12 @@ namespace aeon
         bool loadFromFile(std::string file);
         bool loadFromString(std::string);
         /**
-            Loads values from file/string, does not overwrite. (ensures that certain values always exist)
-        */
-        bool loadDefaultsFromFile(std::string file);
-        bool loadDefaultsFromString(std::string);
-        /**
             Saves current configuration to file. (useful if you change something during runtime, and want to apply it.)
         */
         bool saveToFile(std::string file);
 
-        void setReadOnly(bool readonly);
-        void setIgnoreWarnings(bool ignorewarnings);
+        //void setReadOnly(bool readonly);
+        //void setIgnoreWarnings(bool ignorewarnings);
 
         void print();
 
@@ -36,13 +36,11 @@ namespace aeon
         bool exists(std::string section);
         bool exists(std::string section,std::string key);
     private:
-        bool isreadonly;
-        bool isignorewarnings;
         std::map< std::string, std::map<std::string,std::string> > data;
     };
-    int initKeyPair(config * settings, std::string section, std::string key, int defaultValue);
-    bool initKeyPair(config * settings, std::string section, std::string key, bool defaultValue);
-    std::string initKeyPair(config * settings, std::string section, std::string key, std::string defaultValue);
+    int initKeyPair(Config * settings, std::string section, std::string key, int defaultValue);
+    bool initKeyPair(Config * settings, std::string section, std::string key, bool defaultValue);
+    std::string initKeyPair(Config * settings, std::string section, std::string key, std::string defaultValue);
 }
 
 #endif

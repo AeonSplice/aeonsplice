@@ -1,10 +1,3 @@
-#define EXIT_CRITICAL_FAILURE 9001
-#define EXIT_FAILURE -1
-#define EXIT_SUCCESS 0
-#define AEON_INFO 3
-#define AEON_WARNING 2
-#define AEON_ERROR 1
-#define AEON_FATAL 0
 #include "aeonincludes.hpp"
 using namespace std;
 using namespace aeon;
@@ -12,11 +5,42 @@ using namespace aeon;
 bool init(int argc, char *argv[]);
 void load();
 bool isRunning();
-void render();
+void start();
 void cleanUp();
 
-Config settings;
-Context contextManager;
+namespace aeon
+{
+    class TestContext : public Context
+    {
+        virtual void load()
+        {
+            return;
+        }
+        virtual void execute()
+        {
+            return;
+        }
+        virtual bool needsUpdate()
+        {
+            return false;
+        }
+        virtual void processInput()
+        {
+            return;
+        }
+        virtual void update()
+        {
+            return;
+        }
+        virtual void render()
+        {
+            return;
+        }
+    };
+}
+
+Config * settings;
+Context * contextManager;
 
 int main(int argc, char *argv[])
 {
@@ -35,9 +59,10 @@ int main(int argc, char *argv[])
         log("Loading assets...", AEON_INFO);
         load();
         log("Running...", AEON_INFO);
+        start();
         while(isRunning())
         {
-            render();
+            // ohgod
         }
         log("Cleaning up...", AEON_INFO);
         cleanUp();
@@ -50,26 +75,19 @@ int main(int argc, char *argv[])
     }
 }
 
-void render()
+void start()
 {
-    // TODO: Figure out what method we're using. Standard loop like below, or a simple message pump function
-
-    contextManager.processInput();
-    // Checks to see if the game logic is behind schedule. (needsUpdate() should return false if time since last render is greater than some amount. 1s? 16ms?)
-    //while(contextManager.needsUpdate())
-    //{
-        contextManager.update();
-    //}
-    contextManager.render();
-    Sleep(0);
+    contextManager->execute();
 }
+
 void load()
 {
-    contextManager.load();
+    contextManager->load();
 }
 
 bool init(int argc, char *argv[])
 {
+    // TODO: Set contextManager to an actual context. Currently null
     try
     {
         initAeonDirectories();
@@ -84,7 +102,7 @@ bool init(int argc, char *argv[])
 
     try
     {
-        settings.loadFromFile(getAeonDir()+"settings.ini");
+        settings->loadFromFile(getAeonDir()+"settings.ini");
     }
     catch(...)
     {
@@ -92,13 +110,12 @@ bool init(int argc, char *argv[])
     }
 
     // TODO: Replace with try{}catch{}
-    if(!(settings.loadFromFile(getAeonDir()+"settings.ini")))
+    if(!(settings->loadFromFile(getAeonDir()+"settings.ini")))
     {
         log("Failed to load config", AEON_WARNING);
     }
 
-    getLogSettings(&settings);
-    getInputSettings(&settings);
+    getLogSettings(settings);
 
 	// Command line argument handling
 	if(argc > 1)
@@ -108,15 +125,22 @@ bool init(int argc, char *argv[])
         {
             stringstream argStream(argv[argIter]);
             string arg;
-            argStream >> currentArg;
+            argStream >> arg;
             arguments.push_back(arg);
         }
-        for(int argIter = 0; argIter < arguments.size(); argIter++)
+        for(unsigned int argIter = 0; argIter < arguments.size(); argIter++)
         {
-            if(toBoolean(settings.getValue("debug","printArgs")))
+            try
             {
-                string temp = "Argv["+toString(argIter)+"] = "+arguments.at(argIter);
-                log(temp, AEON_INFO);
+                if(toBoolean(settings->getValue("debug","printArgs")))
+                {
+                    string temp = "Argv["+toString(argIter)+"] = "+arguments.at(argIter);
+                    log(temp, AEON_INFO);
+                }
+            }
+            catch(...)
+            {
+                // Do nothing
             }
             // does this properly skip the next argument?
             if(arguments.at(argIter) == "-profile")
@@ -125,7 +149,7 @@ bool init(int argc, char *argv[])
                 if( (argIter+1) < arguments.size() )
                 {
                     argIter++;
-                    settings.setKeyValue("debug","profile",arguments.at(argIter));
+                    settings->setKeyValue("debug","profile",arguments.at(argIter));
                 }
                 // TODO: else if enough args and argument is NOT valid
                 else
@@ -135,34 +159,45 @@ bool init(int argc, char *argv[])
             }
             else if(arguments.at(argIter) == "-fullscreen")
             {
-                settings.setKeyValue("graphics","fullscreen","true");
+                settings->setKeyValue("graphics","fullscreen","true");
             }
             else if(arguments.at(argIter) == "-debug")
             {
-                settings.setKeyValue("debug","debugging","true");
+                settings->setKeyValue("debug","debugging","true");
             }
             else
             {
-                log("WARNING: Unknown argument \""+arguments.at(argIter)+"\"";
+                log("WARNING: Unknown argument \""+arguments.at(argIter)+"\"");
             }
         }
     }
     else
     {
-        if(toBoolean(settings.getValue("debug","printArgs")))
-            log("No command line args provided.", AEON_INFO);
+        try
+        {
+            if(toBoolean(settings->getValue("debug","printArgs")))
+                log("No command line args provided.", AEON_INFO);
+        }
+        catch(...)
+        {
+            // Do nothing
+        }
     }
 
     // Initialize underlying graphics and audio engines. (GLFW, glew, Ogre3d, that kind of thing)
-	if( !apiInit() )
-	{
-		log("Failed to initialize underlying API(s)", AEON_FATAL);
+    try
+    {
+        apiInit();
+    }
+    catch(...)
+    {
+        log("Failed to initialize underlying API(s)", AEON_FATAL);
 		return false;
-	}
+    }
 
     try
     {
-        contextManager.openContext(&settings);
+        contextManager->openContext(settings);
     }
     catch(...)
     {
@@ -173,7 +208,7 @@ bool init(int argc, char *argv[])
     // This will attempt to init Glew (Tells us what extensions are available)
     try
     {
-        contextManager.processExtensions(&settings);
+        contextManager->processExtensions(settings);
     }
     catch(...)
     {
@@ -185,9 +220,9 @@ bool init(int argc, char *argv[])
 
 void cleanUp()
 {
-    contextManager.closeContext();
+    //contextManager->closeContext();
     apiTerminate();
-    if(!settings.saveToFile(getAeonDir()+"settings.ini"))
+    if(!settings->saveToFile(getAeonDir()+"settings.ini"))
     {
         log("Failed to save configuration!", AEON_WARNING);
     }
@@ -199,7 +234,7 @@ void cleanUp()
 
 bool isRunning()
 {
-    if(contextManager.shouldClose())
+    if(contextManager->shouldClose())
     {
         return false;
     }

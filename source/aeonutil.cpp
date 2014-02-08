@@ -3,9 +3,13 @@
 #include <iostream>
 #include <cstdio>
 #include <string>
+#include <cctype>
+#include <algorithm>
 #include <stdlib.h>
 #include <sstream>
 #include <windows.h>
+
+#include "aeonlog.hpp"
 
 using namespace std;
 
@@ -35,7 +39,7 @@ namespace aeon
         if(path!=NULL)
         {
             std::stringstream temp;
-            std::String output;
+            std::string output;
             temp << path;
             std::getline(temp,output);
             output+="/.aeonsplice/";
@@ -50,8 +54,8 @@ namespace aeon
 
     bool equals(string first, string second)
     {
-        transform(first.begin(), first.end(), first.begin(), ::tolower());
-        transform(second.begin(), second.end(), second.begin(), ::tolower());
+        transform(first.begin(), first.end(), first.begin(), ::tolower);
+        transform(second.begin(), second.end(), second.begin(), ::tolower);
         if(first == second)
             return true;
         else
@@ -77,7 +81,7 @@ namespace aeon
         int output;
         if(!(ss >> output))
         {
-            throw invalid_argument;
+            throw invalid_argument("Provided none-integer value.");
         }
         else
         {
@@ -96,12 +100,12 @@ namespace aeon
         }
         else
         {
-            throw invalid_argument;
+            throw invalid_argument("Provided none-boolean value.");
         }
     }
     void initAeonDirectories()
     {
-        if(CreateDirectory(getAeonDir(), NULL))
+        if(CreateDirectory(getAeonDir().c_str(), NULL))
         {
             log("Succesfully initialized Aeon Splice directories.", AEON_INFO);
         }

@@ -1,9 +1,12 @@
-#include <string>
-#include <fstream>
+#include "aeonlog.hpp"
+
 #include <iostream>
 #include <time.h>
+
 #include "aeonconfig.hpp"
-#include "aeonlog.hpp"
+#include "aeonutil.hpp"
+
+using namespace std;
 
 namespace aeon
 {
@@ -38,7 +41,7 @@ namespace aeon
             }
         }
     }
-    void getLogSettings(config * settings)
+    void getLogSettings(Config * settings)
     {
         isDebug = initKeyPair(settings, "debug", "isDebugMode", true);
         overwriteLog = initKeyPair(settings, "debug", "overwriteLog", false);
