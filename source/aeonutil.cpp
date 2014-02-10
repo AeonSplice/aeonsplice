@@ -81,7 +81,7 @@ namespace aeon
         int output;
         if(!(ss >> output))
         {
-            throw invalid_argument("Provided none-integer value.");
+            throw "Provided non-integer value.";
         }
         else
         {
@@ -100,7 +100,7 @@ namespace aeon
         }
         else
         {
-            throw invalid_argument("Provided none-boolean value.");
+            throw "Provided non-boolean value.";
         }
     }
     void initAeonDirectories()

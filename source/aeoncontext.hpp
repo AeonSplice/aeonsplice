@@ -1,7 +1,9 @@
 #ifndef _AEONCONTEXT_
 #define _AEONCONTEXT_
 
-#include <GL/glfw3.h> // TODO: Isn't this a bad idea?
+#include <GL/glew.h>
+
+#include <GLFW/glfw3.h> // TODO: Isn't this a bad idea?
 
 #include <string>
 
@@ -18,8 +20,8 @@ namespace aeon
         virtual void setContextHint(int target, int hint);
         virtual void setContextVersion(int major, int minor);
 
-        virtual bool openContext();
-        virtual bool openContext(Config * settings);
+        virtual void openContext();
+        virtual void openContext(Config * settings);
         virtual void closeContext();
 
         virtual void processExtensions(Config * settings);

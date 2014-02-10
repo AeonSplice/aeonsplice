@@ -21,7 +21,7 @@ namespace aeon
         char buffer[100];
         cfgFile = fopen(file.c_str(),"r");
         if(cfgFile==NULL)
-            return false;
+            throw "File does not exist.";
         else
         {
             string section;

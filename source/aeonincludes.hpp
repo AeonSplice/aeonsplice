@@ -1,6 +1,9 @@
 #ifndef _AEONINCLUDES_
 #define _AEONINCLUDES_
 
+// GLEW Because it's stupid
+#include <GL/glew.h>
+
 // Standard Includes
 #include <iostream>
 #include <string>
@@ -11,5 +14,6 @@
 #include "aeoncontext.hpp"
 #include "aeonlog.hpp"
 #include "aeonutil.hpp"
+#include "aeongame.hpp"
 
 #endif // _AEONINCLUDES_

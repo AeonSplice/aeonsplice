@@ -8,37 +8,6 @@ bool isRunning();
 void start();
 void cleanUp();
 
-namespace aeon
-{
-    class TestContext : public Context
-    {
-        virtual void load()
-        {
-            return;
-        }
-        virtual void execute()
-        {
-            return;
-        }
-        virtual bool needsUpdate()
-        {
-            return false;
-        }
-        virtual void processInput()
-        {
-            return;
-        }
-        virtual void update()
-        {
-            return;
-        }
-        virtual void render()
-        {
-            return;
-        }
-    };
-}
-
 Config * settings;
 Context * contextManager;
 
@@ -60,10 +29,10 @@ int main(int argc, char *argv[])
         load();
         log("Running...", AEON_INFO);
         start();
-        while(isRunning())
+        /*while(isRunning())
         {
             // ohgod
-        }
+        }*/
         log("Cleaning up...", AEON_INFO);
         cleanUp();
         log("Exiting successfully", AEON_INFO);
@@ -87,7 +56,7 @@ void load()
 
 bool init(int argc, char *argv[])
 {
-    // TODO: Set contextManager to an actual context. Currently null
+    contextManager = new TestContext();
     try
     {
         initAeonDirectories();
@@ -107,12 +76,6 @@ bool init(int argc, char *argv[])
     catch(...)
     {
         log("Failed to load configuration at \""+getAeonDir()+"settings.ini\"", AEON_WARNING);
-    }
-
-    // TODO: Replace with try{}catch{}
-    if(!(settings->loadFromFile(getAeonDir()+"settings.ini")))
-    {
-        log("Failed to load config", AEON_WARNING);
     }
 
     getLogSettings(settings);

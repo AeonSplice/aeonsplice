@@ -3,7 +3,9 @@
 
 #include <string>
 
-#include <GL/glfw3.h>
+#include <GL/glew.h>
+
+#include <GLFW/glfw3.h>
 
 #include "aeonconfig.hpp"
 #include "aeonutil.hpp"
@@ -77,7 +79,7 @@ namespace aeon
         this->setContextHint(GLFW_CONTEXT_VERSION_MINOR, minor);
     }
 
-    bool Context::openContext()
+    void Context::openContext()
     {
         // TODO: lock
         const GLFWvidmode* desktop = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -90,19 +92,47 @@ namespace aeon
         if(!temp)
         {
             // TODO: unlock
-            return false;
+            throw "Failed to create window.";
         }
         else
         {
             aWindowHandle=temp;
             glfwMakeContextCurrent(aWindowHandle);
             // TODO: unlock
-            return true;
+            return;
         }
     }
-    bool Context::openContext(Config * settings)
+    void Context::openContext(Config * settings)
     {
-        return false;
+        bool fullscreen = initKeyPair(settings, "graphics", "fullscreen", false);
+        int width = initKeyPair(settings, "graphics", "width", 800);
+        int height = initKeyPair(settings, "graphics", "height", 600);
+        string compilersAreRetarded = "Default Title";
+        string title = initKeyPair(settings, "graphics", "title", compilersAreRetarded);
+        if(fullscreen)
+        {
+            GLFWmonitor* prim = glfwGetPrimaryMonitor();
+            aWindowHandle = glfwCreateWindow(width,
+                                             height,
+                                             title.c_str(),
+                                             prim,
+                                             NULL
+                                             );
+        }
+        else
+        {
+            aWindowHandle = glfwCreateWindow(width,
+                                             height,
+                                             title.c_str(),
+                                             NULL,
+                                             NULL
+                                             );
+        }
+        glfwMakeContextCurrent(aWindowHandle);
+        if(!aWindowHandle)
+        {
+            throw "Failed to create window.";
+        }
     }
     void Context::closeContext()
     {
@@ -111,7 +141,13 @@ namespace aeon
 
     void Context::processExtensions(Config * settings)
     {
-        // TODO: Initialize and process Glew.
+        glewExperimental = true; // Needed for core profile
+        GLenum GlewInitResult;
+        GlewInitResult = glewInit();
+        if (GLEW_OK != GlewInitResult)
+        {
+            throw "Glew failed to initialize.";
+        }
     }
 
     bool Context::shouldClose()
