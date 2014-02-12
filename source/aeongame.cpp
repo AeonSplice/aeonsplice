@@ -6,6 +6,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include <GL/gl.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -13,29 +15,29 @@ namespace aeon
 {
     TestContext::~TestContext()
     {
-        //glDeleteBuffers(1, &vertexbuffer);
+        glDeleteBuffers(1, &vertexbuffer);
         //glDeleteProgram(programID);
-        //glDeleteVertexArrays(1, &VertexArrayID);
+        glDeleteVertexArrays(1, &VertexArrayID);
         glfwDestroyWindow(aWindowHandle);
     }
     void TestContext::load()
     {
         // Dark blue background
-        /*glClearColor(0.0f, 0.5f, 0.0f, 0.0f);
+        glClearColor(0.0f, 0.5f, 0.0f, 0.0f);
 
         glGenVertexArrays(1, &VertexArrayID);
         glBindVertexArray(VertexArrayID);
 
         // Create and compile our GLSL program from the shaders
-        programID = aeon::loadShaders( "SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader" );
+        //programID = aeon::loadShaders( "SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader" );
 
-        if(programID == 0)
+        /*if(programID == 0)
         {
             //aeon::log("ERROR: Failed to load program for aeontrianglestate");
             return;
-        }
+        }*/
 
-        static const GLfloat g_vertex_buffer_data[] = {
+        const GLfloat g_vertex_buffer_data[] = {
             -1.0f, -1.0f, 0.0f,
              1.0f, -1.0f, 0.0f,
              0.0f,  1.0f, 0.0f,
@@ -43,7 +45,7 @@ namespace aeon
 
         glGenBuffers(1, &vertexbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);*/
+        glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
     }
     void TestContext::execute()
     {
@@ -68,7 +70,7 @@ namespace aeon
     }
     void TestContext::render()
     {
-         /*glDisable(GL_DEPTH_TEST);
+         glDisable(GL_DEPTH_TEST);
         // Use our shader
         //glUseProgram(programID);
 
@@ -88,7 +90,7 @@ namespace aeon
         glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
 
         glDisableVertexAttribArray(0);
-        glEnable(GL_DEPTH_TEST);*/
+        glEnable(GL_DEPTH_TEST);
         glfwSwapBuffers(aWindowHandle);
     }
 }

@@ -158,6 +158,8 @@ bool init(int argc, char *argv[])
 		return false;
     }
 
+    contextManager->setContextVersion(3,3);
+
     try
     {
         contextManager->openContext(settings);
