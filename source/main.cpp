@@ -158,7 +158,9 @@ bool init(int argc, char *argv[])
 		return false;
     }
 
+    // TODO: Configuration for window settings.
     contextManager->setContextVersion(3,3);
+    contextManager->setContextHint("FSAA", "8");
 
     try
     {

@@ -7,7 +7,8 @@
 #include <algorithm>
 #include <stdlib.h>
 #include <sstream>
-#include <windows.h>
+#include <stdexcept>
+//#include <windows.h>
 
 #include "aeonlog.hpp"
 
@@ -81,7 +82,7 @@ namespace aeon
         int output;
         if(!(ss >> output))
         {
-            throw "Provided non-integer value.";
+            throw invalid_argument("Provided non-integer value.");
         }
         else
         {
@@ -100,12 +101,12 @@ namespace aeon
         }
         else
         {
-            throw "Provided non-boolean value.";
+            throw invalid_argument("Provided non-boolean value.");
         }
     }
     void initAeonDirectories()
     {
-        if(CreateDirectory(getAeonDir().c_str(), NULL))
+        /*if(CreateDirectory(getAeonDir().c_str(), NULL))
         {
             log("Succesfully initialized Aeon Splice directories.", AEON_INFO);
         }
@@ -126,6 +127,6 @@ namespace aeon
                 log("AppData does not exist?", AEON_ERROR);
                 throw "404";
             }
-        }
+        }*/
     }
 }
