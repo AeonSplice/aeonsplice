@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <sstream>
 #include <stdexcept>
-//#include <windows.h>
+#include <windows.h>
 
 #include "aeonlog.hpp"
 
@@ -106,7 +106,7 @@ namespace aeon
     }
     void initAeonDirectories()
     {
-        /*if(CreateDirectory(getAeonDir().c_str(), NULL))
+        if(CreateDirectory(getAeonDir().c_str(), NULL))
         {
             log("Succesfully initialized Aeon Splice directories.", AEON_INFO);
         }
@@ -127,6 +127,6 @@ namespace aeon
                 log("AppData does not exist?", AEON_ERROR);
                 throw "404";
             }
-        }*/
+        }
     }
 }

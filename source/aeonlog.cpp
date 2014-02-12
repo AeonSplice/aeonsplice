@@ -1,7 +1,7 @@
 #include "aeonlog.hpp"
 
 #include <iostream>
-#include <time.h>
+#include <sys/time.h>
 
 #include "aeonconfig.hpp"
 #include "aeonutil.hpp"
@@ -15,7 +15,7 @@ namespace aeon
     std::string logLocation = "";
     const std::string currentDateTime()
     {
-        time_t     now = time(0);
+        /*time_t     now = time(0);
         struct tm  tstruct;
         char       buf[80];
         tstruct = *localtime(&now);
@@ -23,7 +23,8 @@ namespace aeon
         // for more information about date/time format
         strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
 
-        return buf;
+        return buf;*/
+        return "wat";
     }
     void overwriteLogFile()
     {
