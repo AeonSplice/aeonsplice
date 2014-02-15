@@ -80,7 +80,7 @@ namespace aeon
 
     void Context::openContext()
     {
-        // TODO: lock
+        // TODO: aLock.lock();
         const GLFWvidmode* desktop = glfwGetVideoMode(glfwGetPrimaryMonitor());
         GLFWwindow* temp = glfwCreateWindow(desktop->width,
                                             desktop->height,
@@ -90,14 +90,14 @@ namespace aeon
                                             );
         if(!temp)
         {
-            // TODO: unlock
+            // TODO: aLock.unlock();
             throw "Failed to create window.";
         }
         else
         {
             aWindowHandle=temp;
             glfwMakeContextCurrent(aWindowHandle);
-            // TODO: unlock
+            // TODO: aLock.unlock();
             return;
         }
     }
@@ -140,13 +140,13 @@ namespace aeon
 
     void Context::processExtensions(Config * settings)
     {
-        glewExperimental = true; // Needed for core profile
+        /*glewExperimental = true; // Needed for core profile
         GLenum GlewInitResult;
         GlewInitResult = glewInit();
         if (GLEW_OK != GlewInitResult)
         {
             throw "Glew failed to initialize.";
-        }
+        }*/
     }
 
     bool Context::shouldClose()

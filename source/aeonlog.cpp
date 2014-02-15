@@ -1,7 +1,7 @@
 #include "aeonlog.hpp"
 
 #include <iostream>
-#include <sys/time.h>
+//#include <ctime>
 
 #include "aeonconfig.hpp"
 #include "aeonutil.hpp"

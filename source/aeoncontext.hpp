@@ -6,6 +6,12 @@
 #include <GLFW/glfw3.h> // TODO: Isn't this a bad idea?
 
 #include <string>
+#include <iostream>
+#include <map>
+#include <string>
+#include <chrono>
+#include <thread>
+#include <mutex>
 
 namespace aeon
 {
@@ -36,6 +42,7 @@ namespace aeon
         virtual void render()=0;
     protected:
         GLFWwindow* aWindowHandle;
+        std::mutex g_pages_mutex;
     };
 
     void apiInit();

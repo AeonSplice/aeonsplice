@@ -119,7 +119,7 @@ namespace aeon
             }
             else if(temp == ERROR_ACCESS_DENIED)
             {
-                log("Access Denied", AEON_ERROR);
+                log("Access Denied.", AEON_ERROR);
                 throw "403";
             }
             else if(temp == ERROR_PATH_NOT_FOUND)
