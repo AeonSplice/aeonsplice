@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            log("Successfully initialized", AEON_INFO);
+            log("Successfully initialized.", AEON_INFO);
         }
         log("Loading assets...", AEON_INFO);
         load();
@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
         start();
         log("Cleaning up...", AEON_INFO);
         cleanUp();
-        log("Exiting successfully", AEON_INFO);
+        log("Exiting successfully.", AEON_INFO);
         return EXIT_SUCCESS;
     }
     catch(...)

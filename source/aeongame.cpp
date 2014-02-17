@@ -60,11 +60,16 @@ namespace aeon
     }
     void TestContext::processInput()
     {
+        aLock.lock();
         glfwPollEvents();
+        // TODO: Process user input.
+        aLock.unlock();
     }
     void TestContext::update()
     {
-        return;
+        aLock.lock();
+        // TODO: Update scene
+        aLock.unlock();
     }
     void TestContext::render()
     {

@@ -82,20 +82,21 @@ namespace aeon
     {
         aLock.lock();
         const GLFWvidmode* desktop = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        GLFWwindow* temp = glfwCreateWindow(desktop->width,
-                                            desktop->height,
-                                            "Untitled",
-                                            glfwGetPrimaryMonitor(),
-                                            NULL
-                                            );
-        if(!temp)
+        aWindowHandle = glfwCreateWindow(desktop->width,
+                                         desktop->height,
+                                         "Untitled",
+                                         glfwGetPrimaryMonitor(),
+                                         NULL
+                                         );
+        if(!aWindowHandle)
         {
             aLock.unlock();
             throw "Failed to create window.";
         }
         else
         {
-            aWindowHandle=temp;
+            // TODO: Generate empty config to use for input?
+            aInput.setWindowHandle(aWindowHandle);
             glfwMakeContextCurrent(aWindowHandle);
             aLock.unlock();
             return;
@@ -103,11 +104,11 @@ namespace aeon
     }
     void Context::openContext(Config * settings)
     {
-        bool fullscreen = initKeyPair(settings, "graphics", "fullscreen", false);
-        int width = initKeyPair(settings, "graphics", "width", 800);
-        int height = initKeyPair(settings, "graphics", "height", 600);
         string compilersAreRetarded = "Default Title";
-        string title = initKeyPair(settings, "graphics", "title", compilersAreRetarded);
+        bool fullscreen =   initKeyPair(settings, "graphics", "fullscreen", false);
+        int width =         initKeyPair(settings, "graphics", "width",      800);
+        int height =        initKeyPair(settings, "graphics", "height",     600);
+        string title =      initKeyPair(settings, "graphics", "title",      compilersAreRetarded);
         aLock.lock();
         if(fullscreen)
         {
@@ -135,12 +136,15 @@ namespace aeon
         }
         else
         {
+            aInput.setInputSettings(settings);
+            aInput.setWindowHandle(aWindowHandle);
             glfwMakeContextCurrent(aWindowHandle);
             aLock.unlock();
         }
     }
     void Context::closeContext()
     {
+        // TODO: Does this need locking?
         glfwSetWindowShouldClose(aWindowHandle, GL_TRUE);
     }
 
@@ -157,6 +161,7 @@ namespace aeon
 
     bool Context::shouldClose()
     {
+        // TODO: Does this need locking?
         return glfwWindowShouldClose(aWindowHandle);
     }
 

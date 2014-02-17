@@ -8,7 +8,8 @@
 
 namespace aeon
 {
-    class Config; // Prototype config so compiler doesn't flip tables
+    class Config;       // Prototype config so compiler doesn't flip tables
+    class InputHandler; // Same deal
 
     class Context
     {
@@ -36,6 +37,7 @@ namespace aeon
     protected:
         GLFWwindow* aWindowHandle;
         std::mutex aLock;
+        InputHandler aInput;
     };
 
     void apiInit();

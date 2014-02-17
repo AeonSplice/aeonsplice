@@ -1,4 +1,5 @@
 #include "aeonlog.hpp"
+// Don't include stuff above here. Because standards.
 
 #include <iostream>
 //#include <ctime>

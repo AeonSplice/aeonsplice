@@ -1,4 +1,5 @@
 ﻿#include "aeonconfig.hpp"
+// Don't include stuff above here. Because standards.
 
 #include <iostream>
 #include <fstream>
@@ -57,7 +58,7 @@ namespace aeon
                     {
                         string key = temp.substr(0,pos);
                         string value = temp.substr(pos+1);
-                        addKeyValue(section,key,value);
+                        setKeyValue(section,key,value);
                     }
                 }
             }
@@ -68,6 +69,7 @@ namespace aeon
 
     bool Config::saveToFile(string file)
     {
+        // You're a wizard harry.
         FILE* cfgFile;
         char buffer[100];
         cfgFile = fopen(file.c_str(),"r");
@@ -262,6 +264,7 @@ namespace aeon
             }
         }
         return true;
+        // I'm a what?
     }
 
     void Config::print()

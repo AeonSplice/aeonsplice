@@ -1,4 +1,5 @@
 #include "aeoninput.hpp"
+// Don't include stuff above here. Because standards.
 
 #include <GLFW/glfw3.h>
 
@@ -11,6 +12,10 @@ using namespace std;
 
 namespace aeon
 {
+    void InputHandler::setWindowHandle(GLFWwindow * windowHandle)
+    {
+        aWindowHandle = windowHandle;
+    }
     void InputHandler::setInputSettings(Config * settings)
     {
         setInput("LMB",             initKeyPair(settings, "input", "LMB",               GLFW_MOUSE_BUTTON_LEFT));
