@@ -13,19 +13,6 @@ namespace aeon
     bool isDebug = true;
     bool overwriteLog = false;
     std::string logLocation = "";
-    const std::string currentDateTime()
-    {
-        /*time_t     now = time(0);
-        struct tm  tstruct;
-        char       buf[80];
-        tstruct = *localtime(&now);
-        // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
-        // for more information about date/time format
-        strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
-
-        return buf;*/
-        return "wat";
-    }
     void overwriteLogFile()
     {
         if(overwriteLog)
@@ -91,28 +78,35 @@ namespace aeon
             std::cout << message << std::endl;
         }
     }
+    void log(const char* message)
+    {
+        log(toString(message));
+    }
     void log(string message, int mode)
     {
-        if(mode == AEON_FATAL)
+        // TODO: Utilize Configuration for verboseness.
+        switch(mode)
         {
+        case AEON_FATAL:
             log("FATAL - "+message);
-        }
-        else if(mode == AEON_ERROR)
-        {
+            break;
+        case AEON_ERROR:
             log("ERROR - "+message);
-        }
-        else if(mode == AEON_WARNING)
-        {
+            break;
+        case AEON_WARNING:
             log("WARNING - "+message);
-        }
-        else if(mode == AEON_INFO)
-        {
+            break;
+        case AEON_INFO:
             log("INFO - "+message);
-        }
-        else
-        {
+            break;
+        default:
             log("Tried to use invalid log mode \""+toString(mode)+"\"", AEON_WARNING);
             log("UNKNOWN - "+message);
+            break;
         }
+    }
+    void log(const char* message, int mode)
+    {
+        log(toString(message), mode);
     }
 }
