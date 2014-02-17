@@ -1,10 +1,9 @@
 #include "aeongame.hpp"
+// Don't include stuff above here. Because standards.
 
 #include "aeoncontext.hpp"
 
 #include <GL/glew.h>
-#include <GL/gl.h>
-
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
@@ -30,11 +29,11 @@ namespace aeon
         // Create and compile our GLSL program from the shaders
         //programID = aeon::loadShaders( "SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader" );
 
-        /*if(programID == 0)
-        {
-            //aeon::log("ERROR: Failed to load program for aeontrianglestate");
-            return;
-        }*/
+        //if(programID == 0)
+        //{
+        //    //aeon::log("ERROR: Failed to load program for aeontrianglestate");
+        //    return;
+        //}
 
         const GLfloat g_vertex_buffer_data[] = {
             -1.0f, -1.0f, 0.0f,

@@ -80,7 +80,7 @@ namespace aeon
 
     void Context::openContext()
     {
-        // TODO: aLock.lock();
+        aLock.lock();
         const GLFWvidmode* desktop = glfwGetVideoMode(glfwGetPrimaryMonitor());
         GLFWwindow* temp = glfwCreateWindow(desktop->width,
                                             desktop->height,
@@ -90,14 +90,14 @@ namespace aeon
                                             );
         if(!temp)
         {
-            // TODO: aLock.unlock();
+            aLock.unlock();
             throw "Failed to create window.";
         }
         else
         {
             aWindowHandle=temp;
             glfwMakeContextCurrent(aWindowHandle);
-            // TODO: aLock.unlock();
+            aLock.unlock();
             return;
         }
     }
@@ -108,6 +108,7 @@ namespace aeon
         int height = initKeyPair(settings, "graphics", "height", 600);
         string compilersAreRetarded = "Default Title";
         string title = initKeyPair(settings, "graphics", "title", compilersAreRetarded);
+        aLock.lock();
         if(fullscreen)
         {
             GLFWmonitor* prim = glfwGetPrimaryMonitor();
@@ -127,10 +128,15 @@ namespace aeon
                                              NULL
                                              );
         }
-        glfwMakeContextCurrent(aWindowHandle);
         if(!aWindowHandle)
         {
+            aLock.unlock();
             throw "Failed to create window.";
+        }
+        else
+        {
+            glfwMakeContextCurrent(aWindowHandle);
+            aLock.unlock();
         }
     }
     void Context::closeContext()
@@ -140,13 +146,13 @@ namespace aeon
 
     void Context::processExtensions(Config * settings)
     {
-        /*glewExperimental = true; // Needed for core profile
+        glewExperimental = true; // Needed for core profile
         GLenum GlewInitResult;
         GlewInitResult = glewInit();
         if (GLEW_OK != GlewInitResult)
         {
             throw "Glew failed to initialize.";
-        }*/
+        }
     }
 
     bool Context::shouldClose()

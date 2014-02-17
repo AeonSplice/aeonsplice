@@ -29,10 +29,6 @@ int main(int argc, char *argv[])
         load();
         log("Running...", AEON_INFO);
         start();
-        /*while(isRunning())
-        {
-            // ohgod
-        }*/
         log("Cleaning up...", AEON_INFO);
         cleanUp();
         log("Exiting successfully", AEON_INFO);
@@ -57,6 +53,7 @@ void load()
 bool init(int argc, char *argv[])
 {
     contextManager = new TestContext();
+
     try
     {
         initAeonDirectories();
@@ -66,6 +63,7 @@ bool init(int argc, char *argv[])
         log("Failed to init Data Directory at \""+getAeonDir()+"\"", AEON_ERROR);
         return false;
     }
+
     setLogFile(getAeonDir()+"debugging.log");
     settings = new Config();
 
@@ -101,9 +99,9 @@ bool init(int argc, char *argv[])
                     log(temp, AEON_INFO);
                 }
             }
-            catch(...)
+            catch(exception& e)
             {
-                // Do nothing
+                log(e.what(), AEON_WARNING);
             }
             // does this properly skip the next argument?
             if(arguments.at(argIter) == "-profile")
@@ -141,9 +139,10 @@ bool init(int argc, char *argv[])
             if(toBoolean(settings->getValue("debug","printArgs")))
                 log("No command line args provided.", AEON_INFO);
         }
-        catch(...)
+        catch(invalid_argument e)
         {
-            // Do nothing
+            settings->setKeyValue("debug","printArgs","false");
+            log("Debug->printArgs contained non-boolean value, overwriting to false.", AEON_WARNING);
         }
     }
 
@@ -158,9 +157,14 @@ bool init(int argc, char *argv[])
 		return false;
     }
 
-    // TODO: Configuration for window settings.
-    contextManager->setContextVersion(3,3);
-    contextManager->setContextHint("FSAA", "8");
+    int fsaa = initKeyPair(settings, "graphics", "fsaa", 4);
+    bool resizable = initKeyPair(settings, "graphics", "resizable", false);
+    bool decorated = initKeyPair(settings, "graphics", "resizable", true);
+
+    contextManager->setContextVersion(3,3); // TODO: Leaving OpenGL version hardcoded until the version used becomes important.
+    contextManager->setContextHint("FSAA", toString(fsaa));
+    contextManager->setContextHint("resizable", toString(resizable));
+    contextManager->setContextHint("decorated", toString(decorated));
 
     try
     {
