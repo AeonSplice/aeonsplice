@@ -26,12 +26,16 @@ namespace aeon
     bool equals(std::string first, std::string second);
 
     std::string toString(int number);
+    std::string toString(unsigned int number);
+    std::string toString(bool boolean);
+    std::string toString(const char* str);
+
     int toInt(std::string number);
     bool toBoolean(std::string boolean);
 
     void initAeonDirectories();
 
-    double getCurrentTimeMilli();
+    // TODO: double getCurrentTimeMilli();
     const std::string currentDateTime();
 }
 #endif // _AEONUTIL_

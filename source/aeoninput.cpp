@@ -1,6 +1,7 @@
 #include "aeoninput.hpp"
 // Don't include stuff above here. Because standards.
 
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <string>
@@ -12,6 +13,14 @@ using namespace std;
 
 namespace aeon
 {
+    InputHandler::InputHandler()
+    {
+        // TODO: InputHandler Constructor
+    }
+    InputHandler::~InputHandler()
+    {
+        // TODO: InputHandler Destructor
+    }
     void InputHandler::setWindowHandle(GLFWwindow * windowHandle)
     {
         aWindowHandle = windowHandle;

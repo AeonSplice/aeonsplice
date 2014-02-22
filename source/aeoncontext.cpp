@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 
 #include "aeonconfig.hpp"
+#include "aeoninput.hpp"
 #include "aeonutil.hpp"
 
 using namespace std;

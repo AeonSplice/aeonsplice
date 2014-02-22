@@ -1,15 +1,17 @@
 #ifndef _AEONCONTEXT_
 #define _AEONCONTEXT_
 
-#include <GLFW/glfw3.h> // TODO: Isn't this a bad idea?
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include <string>
 #include <mutex>
 
+#include "aeoninput.hpp"
+
 namespace aeon
 {
     class Config;       // Prototype config so compiler doesn't flip tables
-    class InputHandler; // Same deal
 
     class Context
     {

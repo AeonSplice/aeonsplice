@@ -2,7 +2,7 @@
 #define _AEONINCLUDES_
 
 // GLEW Because it's stupid
-#include <GL/glew.h>
+//#include <GL/glew.h>
 
 // Standard Includes
 #include <iostream>

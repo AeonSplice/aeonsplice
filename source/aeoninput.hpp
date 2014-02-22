@@ -1,9 +1,13 @@
 #ifndef _AEONINPUT_
 #define _AEONINPUT_
 
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <string>
+#include <map>
+
+using namespace std;
 
 namespace aeon
 {
