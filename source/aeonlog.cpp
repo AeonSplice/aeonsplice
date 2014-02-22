@@ -32,7 +32,7 @@ namespace aeon
     }
     void getLogSettings(Config * settings)
     {
-        isDebug = initKeyPair(settings, "debug", "isDebugMode", true);
+        isDebug = initKeyPair(settings, "debug", "debugging", true);
         overwriteLog = initKeyPair(settings, "debug", "overwriteLog", false);
         if(overwriteLog)
             overwriteLogFile();
