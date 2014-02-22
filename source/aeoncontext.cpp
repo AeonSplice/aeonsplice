@@ -42,7 +42,7 @@ namespace aeon
                 }
                 else
                 {
-                    this->setContextHint(GLFW_RESIZABLE, GL_TRUE);
+                    this->setContextHint(GLFW_RESIZABLE, GL_FALSE);
                 }
             }
             catch(...)
@@ -60,7 +60,7 @@ namespace aeon
                 }
                 else
                 {
-                    this->setContextHint(GLFW_DECORATED, GL_TRUE);
+                    this->setContextHint(GLFW_DECORATED, GL_FALSE);
                 }
             }
             catch(...)

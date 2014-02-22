@@ -102,7 +102,8 @@ bool init(int argc, char *argv[])
             }
             catch(exception& e)
             {
-                log(e.what(), AEON_WARNING);
+                settings->setKeyValue("debug","printArgs","true");
+                log("Debug->printArgs contained non-boolean value, overwriting to true.", AEON_WARNING);
             }
             // does this properly skip the next argument?
             if(arguments.at(argIter) == "-profile")
@@ -142,8 +143,8 @@ bool init(int argc, char *argv[])
         }
         catch(invalid_argument e)
         {
-            settings->setKeyValue("debug","printArgs","false");
-            log("Debug->printArgs contained non-boolean value, overwriting to false.", AEON_WARNING);
+            settings->setKeyValue("debug","printArgs","true");
+            log("Debug->printArgs contained non-boolean value, overwriting to true.", AEON_WARNING);
         }
     }
 
@@ -160,7 +161,7 @@ bool init(int argc, char *argv[])
 
     int fsaa = initKeyPair(settings, "graphics", "fsaa", 4);
     bool resizable = initKeyPair(settings, "graphics", "resizable", false);
-    bool decorated = initKeyPair(settings, "graphics", "resizable", true);
+    bool decorated = initKeyPair(settings, "graphics", "decorated", true);
 
     contextManager->setContextVersion(3,3); // TODO: Leaving OpenGL version hardcoded until the version used becomes important.
     contextManager->setContextHint("FSAA", toString(fsaa));
