@@ -10,6 +10,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <windows.h>
+#include <time.h>
 
 #include "aeonlog.hpp"
 
@@ -67,16 +68,16 @@ namespace aeon
     const std::string currentDateTime()
     {
         // TODO: datetime function
-        /*time_t     now = time(0);
+        time_t     now = time(0);
         struct tm  tstruct;
         char       buf[80];
         tstruct = *localtime(&now);
         // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
         // for more information about date/time format
-        strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);*/
+        strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
 
-        //return buf;
-        return "Temp";
+        return buf;
+        //return "Temp";
     }
 
     string toString(int number)

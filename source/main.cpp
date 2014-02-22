@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
         if(!init(argc, argv))
         {
             apiTerminate();
-            log("Failed to initialize", AEON_FATAL);
+            log("Failed to initialize.", AEON_FATAL);
             return EXIT_FAILURE;
         }
         else
@@ -34,8 +34,9 @@ int main(int argc, char *argv[])
         log("Exiting successfully.", AEON_INFO);
         return EXIT_SUCCESS;
     }
-    catch(...)
+    catch(exception& e)
     {
+        log("Uncaught exception: \""+string(e.what())+"\"", AEON_FATAL);
         return EXIT_CRITICAL_FAILURE;
     }
 }

@@ -22,7 +22,7 @@ namespace aeon
             logFile = fopen(logLocation.c_str(),"w");
             if(logFile==NULL)
             {
-                std::cout << "ERROR: Failed to overwrite log file." << std::endl;
+                std::cout << "ERROR - Failed to overwrite log file." << std::endl;
             }
             else
             {
@@ -34,6 +34,8 @@ namespace aeon
     {
         isDebug = initKeyPair(settings, "debug", "isDebugMode", true);
         overwriteLog = initKeyPair(settings, "debug", "overwriteLog", false);
+        if(overwriteLog)
+            overwriteLogFile();
     }
     void setLogFile(std::string file)
     {
