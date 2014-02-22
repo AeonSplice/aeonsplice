@@ -20,6 +20,7 @@ namespace aeon
     }
     void TestContext::load()
     {
+        aLock.lock();
         // Dark blue background
         glClearColor(0.0f, 0.5f, 0.0f, 0.0f);
 
@@ -44,6 +45,7 @@ namespace aeon
         glGenBuffers(1, &vertexbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+        aLock.unlock();
     }
     void TestContext::execute()
     {
@@ -62,7 +64,17 @@ namespace aeon
     {
         aLock.lock();
         glfwPollEvents();
-        // TODO: Process user input.
+        try
+        {
+            if(aInput.isKeyDown("CLOSE"))
+            {
+                this->closeContext();
+            }
+        }
+        catch(...)
+        {
+            // Do nothing... Means that CLOSE was not defined.
+        }
         aLock.unlock();
     }
     void TestContext::update()
@@ -73,6 +85,7 @@ namespace aeon
     }
     void TestContext::render()
     {
+        aLock.lock();
          glDisable(GL_DEPTH_TEST);
         // Use our shader
         //glUseProgram(programID);
@@ -95,5 +108,6 @@ namespace aeon
         glDisableVertexAttribArray(0);
         glEnable(GL_DEPTH_TEST);
         glfwSwapBuffers(aWindowHandle);
+        aLock.unlock();
     }
 }
