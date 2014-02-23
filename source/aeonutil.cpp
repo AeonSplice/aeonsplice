@@ -105,7 +105,7 @@ namespace aeon
     }
     string toString(vector<char> str)
     {
-        return std::string( str.begin(), str.end());
+        return std::string(str.data());
     }
     int toInt(string number)
     {
