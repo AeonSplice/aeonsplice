@@ -103,6 +103,10 @@ namespace aeon
     {
         return std::string(str);
     }
+    string toString(vector<char> str)
+    {
+        return std::string( str.begin(), str.end());
+    }
     int toInt(string number)
     {
         istringstream ss(number);

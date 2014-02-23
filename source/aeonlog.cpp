@@ -2,7 +2,6 @@
 // Don't include stuff above here. Because standards.
 
 #include <iostream>
-//#include <ctime>
 
 #include "aeonconfig.hpp"
 #include "aeonutil.hpp"
@@ -85,6 +84,10 @@ namespace aeon
     {
         log(toString(message));
     }
+    void log(vector<char> message)
+    {
+        log(toString(message));
+    }
     void log(string message, int mode)
     {
         // TODO: Utilize Configuration for verboseness.
@@ -109,6 +112,10 @@ namespace aeon
         }
     }
     void log(const char* message, int mode)
+    {
+        log(toString(message), mode);
+    }
+    void log(vector<char> message, int mode)
     {
         log(toString(message), mode);
     }

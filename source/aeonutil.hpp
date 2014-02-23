@@ -17,6 +17,7 @@
 #define AEON_FATAL 0
 
 #include <string>
+#include <vector>
 
 namespace aeon
 {
@@ -29,6 +30,7 @@ namespace aeon
     std::string toString(unsigned int number);
     std::string toString(bool boolean);
     std::string toString(const char* str);
+    std::string toString(std::vector<char> str);
 
     int toInt(std::string number);
     bool toBoolean(std::string boolean);
