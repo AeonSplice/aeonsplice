@@ -2,6 +2,7 @@
 // Don't include stuff above here. Because standards.
 
 #include "aeoncontext.hpp"
+#include "aeonshader.hpp"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -22,19 +23,18 @@ namespace aeon
     {
         aLock.lock();
         // Dark blue background
-        glClearColor(0.0f, 0.5f, 0.0f, 0.0f);
+        glClearColor(0.0f, 0.5f, 0.8f, 0.0f);
 
         glGenVertexArrays(1, &VertexArrayID);
         glBindVertexArray(VertexArrayID);
 
         // Create and compile our GLSL program from the shaders
-        //programID = aeon::loadShaders( "SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader" );
+        programID = initProgram( "vert.glsl", "frag.glsl" );
 
-        //if(programID == 0)
-        //{
-        //    //aeon::log("ERROR: Failed to load program for aeontrianglestate");
-        //    return;
-        //}
+        if(programID == 0)
+        {
+            throw "Failed to load program for TestContext";
+        }
 
         const GLfloat g_vertex_buffer_data[] = {
             -1.0f, -1.0f, 0.0f,
@@ -86,9 +86,10 @@ namespace aeon
     void TestContext::render()
     {
         aLock.lock();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
          glDisable(GL_DEPTH_TEST);
         // Use our shader
-        //glUseProgram(programID);
+        glUseProgram(programID);
 
         // 1rst attribute buffer : vertices
         glEnableVertexAttribArray(0);

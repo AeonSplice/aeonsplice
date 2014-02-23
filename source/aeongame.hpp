@@ -23,6 +23,7 @@ namespace aeon
     private:
         GLuint vertexbuffer;
         GLuint VertexArrayID;
+        GLuint programID;
     };
 }
 
