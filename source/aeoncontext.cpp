@@ -145,7 +145,7 @@ namespace aeon
     }
     void Context::closeContext()
     {
-        // TODO: Does this need locking?
+        // NOTE: Does this need locking?
         glfwSetWindowShouldClose(aWindowHandle, GL_TRUE);
     }
 
@@ -162,7 +162,7 @@ namespace aeon
 
     bool Context::shouldClose()
     {
-        // TODO: Does this need locking?
+        // NOTE: Does this need locking?
         return glfwWindowShouldClose(aWindowHandle);
     }
 

@@ -137,6 +137,7 @@ namespace aeon
     }
     void initAeonDirectories()
     {
+        // NOTE: This code is platform specific, and needs preprocessor tokens when linux compatibility is implemented.
         if(CreateDirectory(getAeonDir().c_str(), NULL))
         {
             log("Succesfully initialized Aeon Splice directories.", AEON_INFO);

@@ -31,10 +31,12 @@ namespace aeon
     }
     void getLogSettings(Config * settings)
     {
-        isDebug = initKeyPair(settings, "debug", "debugging", true);
-        overwriteLog = initKeyPair(settings, "debug", "overwriteLog", false);
-        if(overwriteLog)
+        static bool overwritten = false;
+        isDebug = initKeyPair(settings, "debug", "debugging", false);
+        overwriteLog = initKeyPair(settings, "debug", "overwriteLog", true);
+        if(overwriteLog && !overwritten)
             overwriteLogFile();
+        overwritten = true;
     }
     void setLogFile(std::string file)
     {

@@ -148,6 +148,9 @@ bool init(int argc, char *argv[])
         }
     }
 
+    // NOTE: Sets log settings again, to account for arguments like -debug
+    getLogSettings(settings);
+
     // Initialize underlying graphics and audio engines. (GLFW, glew, Ogre3d, that kind of thing)
     try
     {

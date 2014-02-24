@@ -8,6 +8,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <CEGUI/CEGUI.h>
+#include <CEGUI/RendererModules/OpenGL/GL3Renderer.h>
+
 namespace aeon
 {
     class TestContext : public Context
