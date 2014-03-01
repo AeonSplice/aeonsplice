@@ -2,6 +2,7 @@
 #define _AEONGAME_
 
 #include "aeoncontext.hpp"
+#include "aeonstate.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -13,13 +14,22 @@
 
 namespace aeon
 {
+    // Overwrite default context, and make it load a state (TestState)
     class TestContext : public Context
     {
     public:
         virtual ~TestContext();
         virtual void load();
-        virtual void execute();
-        virtual bool needsUpdate();
+    };
+
+    // Overwrite default state, and make it render something useful. (a pretty triangle)
+    class TestState : public State
+    {
+    public:
+        virtual ~TestState();
+
+        virtual void load(Config * settings, GLFWwindow* window, function<void(State * newState)> handler);
+
         virtual void processInput();
         virtual void update();
         virtual void render();

@@ -8,6 +8,7 @@
 #include <mutex>
 
 #include "aeoninput.hpp"
+#include "aeonscene.hpp"
 
 namespace aeon
 {
@@ -28,18 +29,15 @@ namespace aeon
 
         virtual void processExtensions(Config * settings);
         virtual void load()=0;
-        virtual void execute()=0;
+        virtual void execute();
+        virtual void changeState(State * newState);
 
         virtual bool shouldClose();
-        virtual bool needsUpdate()=0;
-
-        virtual void processInput()=0;
-        virtual void update()=0;
-        virtual void render()=0;
     protected:
         GLFWwindow* aWindowHandle;
         std::mutex aLock;
         InputHandler aInput;
+        State * aState;
     };
 
     void apiInit();

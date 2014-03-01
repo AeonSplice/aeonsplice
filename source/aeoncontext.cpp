@@ -85,7 +85,7 @@ namespace aeon
         const GLFWvidmode* desktop = glfwGetVideoMode(glfwGetPrimaryMonitor());
         aWindowHandle = glfwCreateWindow(desktop->width,
                                          desktop->height,
-                                         "Untitled",
+                                         glfwGetMonitorName(),
                                          glfwGetPrimaryMonitor(),
                                          NULL
                                          );
@@ -114,8 +114,9 @@ namespace aeon
         if(fullscreen)
         {
             GLFWmonitor* prim = glfwGetPrimaryMonitor();
-            aWindowHandle = glfwCreateWindow(width,
-                                             height,
+            const GLFWvidmode* desktop = glfwGetVideoMode(prim);
+            aWindowHandle = glfwCreateWindow(desktop->width,
+                                             desktop->height,
                                              title.c_str(),
                                              prim,
                                              NULL
@@ -158,6 +159,14 @@ namespace aeon
         {
             throw "Glew failed to initialize.";
         }
+    }
+
+    void Context::changeState(State * newState)
+    {
+        aLock.lock();
+        // FIXME: Memory leak (old state isn't destroyed)
+        aState = newState;
+        aLock.unlock();
     }
 
     bool Context::shouldClose()
