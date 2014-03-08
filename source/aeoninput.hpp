@@ -28,7 +28,7 @@ namespace aeon
 
         bool isMouseDown(std::string button);
         bool isKeyDown(std::string key);
-    private:
+    protected:
         map<string,int> knownInputs;
         GLFWwindow * aWindowHandle;
     };
