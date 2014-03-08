@@ -1,21 +1,23 @@
 #ifndef _AEONSTATE_
 #define _AEONSTATE_
 
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <functional>
 
-namespace
+namespace aeon
 {
     class Config;
+    class Context;
 
     class State
     {
     public:
-        virtual ~State();
+        //virtual ~State()=0;
 
         virtual void load(Config * settings,
                           GLFWwindow* window,
-                          function<void(State * newState)> handler)=0;
+                          Context * context)=0;
 
         virtual void executeFrame();
         virtual void changeState(State * newState);
@@ -25,9 +27,11 @@ namespace
         virtual void render()=0;
     protected:
         Config * aSettings;
+        Context * contextHandle;
         GLFWwindow* aWindowHandle;
-        function<void(State * newState)> updateState;
     };
+
+    void vodoMagic(Context * context, State * newState);
 }
 
 #endif // _AEONSTATE_

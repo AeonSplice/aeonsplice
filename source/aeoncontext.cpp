@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 
 #include "aeonconfig.hpp"
+#include "aeonstate.hpp"
 #include "aeoninput.hpp"
 #include "aeonutil.hpp"
 
@@ -82,11 +83,12 @@ namespace aeon
     void Context::openContext()
     {
         aLock.lock();
-        const GLFWvidmode* desktop = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        GLFWmonitor* prim = glfwGetPrimaryMonitor();
+        const GLFWvidmode* desktop = glfwGetVideoMode(prim);
         aWindowHandle = glfwCreateWindow(desktop->width,
                                          desktop->height,
-                                         glfwGetMonitorName(),
-                                         glfwGetPrimaryMonitor(),
+                                         glfwGetMonitorName(prim),
+                                         prim,
                                          NULL
                                          );
         if(!aWindowHandle)
@@ -96,8 +98,7 @@ namespace aeon
         }
         else
         {
-            // TODO: Generate empty config to use for input?
-            aInput.setWindowHandle(aWindowHandle);
+            aSettings = new Config();
             glfwMakeContextCurrent(aWindowHandle);
             aLock.unlock();
             return;
@@ -138,8 +139,7 @@ namespace aeon
         }
         else
         {
-            aInput.setInputSettings(settings);
-            aInput.setWindowHandle(aWindowHandle);
+            aSettings = settings;
             glfwMakeContextCurrent(aWindowHandle);
             aLock.unlock();
         }
@@ -158,6 +158,16 @@ namespace aeon
         if (GLEW_OK != GlewInitResult)
         {
             throw "Glew failed to initialize.";
+        }
+    }
+
+    void Context::execute()
+    {
+        while(!shouldClose())
+        {
+            aLock.lock();
+            aState->executeFrame();
+            aLock.unlock();
         }
     }
 
