@@ -29,7 +29,7 @@ namespace aeon
         bool setKeyValue(std::string section,std::string key,std::string value);
         bool exists(std::string section);
         bool exists(std::string section,std::string key);
-    private:
+    protected:
         std::map< std::string, std::map<std::string,std::string> > data;
     };
     int initKeyPair         (Config * settings, std::string section, std::string key, int defaultValue);

@@ -4,11 +4,10 @@ using namespace aeon;
 
 bool init(int argc, char *argv[]);
 void load();
-bool isRunning();
 void start();
 void cleanUp();
 
-Config * settings;
+Config * mainConfig;
 Context * contextManager;
 
 int main(int argc, char *argv[])
@@ -66,18 +65,18 @@ bool init(int argc, char *argv[])
     }
 
     setLogFile(getAeonDir()+"debugging.log");
-    settings = new Config();
+    mainConfig = new Config();
 
     try
     {
-        settings->loadFromFile(getAeonDir()+"settings.ini");
+        mainConfig->loadFromFile(getAeonDir()+"settings.ini");
     }
     catch(...)
     {
         log("Failed to load configuration at \""+getAeonDir()+"settings.ini\"", AEON_WARNING);
     }
 
-    getLogSettings(settings);
+    getLogSettings(mainConfig);
 
 	// Command line argument handling
 	if(argc > 1)
@@ -94,7 +93,7 @@ bool init(int argc, char *argv[])
         {
             try
             {
-                if(toBoolean(settings->getValue("debug","printArgs")))
+                if(toBoolean(mainConfig->getValue("debug","printArgs")))
                 {
                     string temp = "Argv["+toString(argIter)+"] = "+arguments.at(argIter);
                     log(temp, AEON_INFO);
@@ -102,7 +101,7 @@ bool init(int argc, char *argv[])
             }
             catch(exception& e)
             {
-                settings->setKeyValue("debug","printArgs","true");
+                mainConfig->setKeyValue("debug","printArgs","true");
                 log("Debug->printArgs contained non-boolean value, overwriting to true.", AEON_WARNING);
             }
             // does this properly skip the next argument?
@@ -112,7 +111,7 @@ bool init(int argc, char *argv[])
                 if( (argIter+1) < arguments.size() )
                 {
                     argIter++;
-                    settings->setKeyValue("debug","profile",arguments.at(argIter));
+                    mainConfig->setKeyValue("debug","profile",arguments.at(argIter));
                 }
                 // TODO: else if enough args and argument is NOT valid
                 else
@@ -122,11 +121,11 @@ bool init(int argc, char *argv[])
             }
             else if(arguments.at(argIter) == "-fullscreen")
             {
-                settings->setKeyValue("graphics","fullscreen","true");
+                mainConfig->setKeyValue("graphics","fullscreen","true");
             }
             else if(arguments.at(argIter) == "-debug")
             {
-                settings->setKeyValue("debug","debugging","true");
+                mainConfig->setKeyValue("debug","debugging","true");
             }
             else
             {
@@ -138,18 +137,18 @@ bool init(int argc, char *argv[])
     {
         try
         {
-            if(toBoolean(settings->getValue("debug","printArgs")))
+            if(toBoolean(mainConfig->getValue("debug","printArgs")))
                 log("No command line args provided.", AEON_INFO);
         }
         catch(invalid_argument e)
         {
-            settings->setKeyValue("debug","printArgs","true");
+            mainConfig->setKeyValue("debug","printArgs","true");
             log("Debug->printArgs contained non-boolean value, overwriting to true.", AEON_WARNING);
         }
     }
 
     // NOTE: Sets log settings again, to account for arguments like -debug
-    getLogSettings(settings);
+    getLogSettings(mainConfig);
 
     // Initialize underlying graphics and audio engines. (GLFW, glew, Ogre3d, that kind of thing)
     try
@@ -162,18 +161,18 @@ bool init(int argc, char *argv[])
 		return false;
     }
 
-    int fsaa = initKeyPair(settings, "graphics", "fsaa", 4);
-    bool resizable = initKeyPair(settings, "graphics", "resizable", false);
-    bool decorated = initKeyPair(settings, "graphics", "decorated", true);
+    int fsaa =       initKeyPair(mainConfig, "graphics", "fsaa",      4);
+    bool resizable = initKeyPair(mainConfig, "graphics", "resizable", false);
+    bool decorated = initKeyPair(mainConfig, "graphics", "decorated", true);
 
     contextManager->setContextVersion(3,3); // TODO: Leaving OpenGL version hardcoded until the version used becomes important.
-    contextManager->setContextHint("FSAA", toString(fsaa));
+    contextManager->setContextHint("FSAA",      toString(fsaa));
     contextManager->setContextHint("resizable", toString(resizable));
     contextManager->setContextHint("decorated", toString(decorated));
 
     try
     {
-        contextManager->openContext(settings);
+        contextManager->openContext(mainConfig);
     }
     catch(...)
     {
@@ -184,7 +183,7 @@ bool init(int argc, char *argv[])
     // This will attempt to init Glew (Tells us what extensions are available)
     try
     {
-        contextManager->processExtensions(settings);
+        contextManager->processExtensions(mainConfig);
     }
     catch(...)
     {
@@ -196,26 +195,15 @@ bool init(int argc, char *argv[])
 
 void cleanUp()
 {
-    //contextManager->closeContext();
+    // Obsolete now...I think
+    // contextManager->closeContext();
     apiTerminate();
-    if(!settings->saveToFile(getAeonDir()+"settings.ini"))
+    if(!mainConfig->saveToFile(getAeonDir()+"settings.ini"))
     {
         log("Failed to save configuration!", AEON_WARNING);
     }
     else
     {
         log("Successfully saved configuration.", AEON_INFO);
-    }
-}
-
-bool isRunning()
-{
-    if(contextManager->shouldClose())
-    {
-        return false;
-    }
-    else
-    {
-        return true;
     }
 }

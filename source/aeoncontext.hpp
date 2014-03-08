@@ -7,11 +7,14 @@
 #include <string>
 #include <mutex>
 
-#include "aeoninput.hpp"
+//#include "aeoninput.hpp"
+//#include "aeonstate.hpp"
 
 namespace aeon
 {
     class Config;       // Prototype config so compiler doesn't flip tables
+    class State;
+    class InputHandler; // And inputhandler...
 
     class Context
     {
@@ -28,18 +31,15 @@ namespace aeon
 
         virtual void processExtensions(Config * settings);
         virtual void load()=0;
-        virtual void execute()=0;
+        virtual void execute();
+        virtual void changeState(State * newState);
 
         virtual bool shouldClose();
-        virtual bool needsUpdate()=0;
-
-        virtual void processInput()=0;
-        virtual void update()=0;
-        virtual void render()=0;
     protected:
         GLFWwindow* aWindowHandle;
+        Config * aSettings;
+        State * aState;
         std::mutex aLock;
-        InputHandler aInput;
     };
 
     void apiInit();
