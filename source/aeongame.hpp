@@ -22,26 +22,6 @@ namespace aeon
         virtual void setInputSettings(Config * settings);
     };
 
-    // For testing purposes
-    class SquareState : public State
-    {
-    public:
-        virtual ~SquareState();
-
-        virtual void load(Config * settings, GLFWwindow* window, Context * context);
-
-        void loadGL();
-
-        virtual void processInput();
-        virtual void update();
-        virtual void render();
-    protected:
-        InputHandler aInput;
-        GLuint vertexbuffer;
-        GLuint VertexArrayID;
-        GLuint programID;
-    };
-
     // Overwrite default state, and make it render something useful. (a pretty triangle)
     class TestState : public State
     {
@@ -52,7 +32,7 @@ namespace aeon
 
         void loadGL();
 
-        virtual void processInput();
+        virtual void processInput(int key, int scancode, int action, int mods);
         virtual void update();
         virtual void render();
     protected:

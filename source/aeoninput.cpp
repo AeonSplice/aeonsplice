@@ -93,4 +93,9 @@ namespace aeon
             throw invalid_argument("Input not found.");
         }
     }
+
+    void InputHandler::processKeyInput()
+    {
+        // TODO: This is the callback for glfw key events.
+    }
 }

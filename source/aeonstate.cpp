@@ -16,7 +16,6 @@ namespace aeon
 
     void State::executeFrame()
     {
-        this->processInput();
         this->update();
         this->render();
     }

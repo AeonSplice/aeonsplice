@@ -80,6 +80,17 @@ namespace aeon
         this->setContextHint(GLFW_CONTEXT_VERSION_MINOR, minor);
     }
 
+    void Context::processInput(int key, int scancode, int action, int mods)
+    {
+        aState->processInput(key, scancode, action, mods);
+    }
+
+    static void vodoInput(GLFWwindow* window, int key, int scancode, int action, int mods)
+    {
+        Context * temp = static_cast<Context*>(glfwGetWindowUserPointer(window));
+        temp->processInput(key, scancode, action, mods);
+    }
+
     void Context::openContext()
     {
         aLock.lock();
@@ -100,6 +111,8 @@ namespace aeon
         {
             aSettings = new Config();
             glfwMakeContextCurrent(aWindowHandle);
+            glfwSetWindowUserPointer(aWindowHandle, this);
+            glfwSetKeyCallback(aWindowHandle, vodoInput);
             aLock.unlock();
             return;
         }
@@ -141,6 +154,8 @@ namespace aeon
         {
             aSettings = settings;
             glfwMakeContextCurrent(aWindowHandle);
+            glfwSetWindowUserPointer(aWindowHandle, this);
+            glfwSetKeyCallback(aWindowHandle, vodoInput);
             aLock.unlock();
         }
     }

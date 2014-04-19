@@ -26,8 +26,11 @@ namespace aeon
         int getInput(std::string input);
         bool inputExists(std::string input);
 
-        bool isMouseDown(std::string button);
-        bool isKeyDown(std::string key);
+        bool isMouseDown(std::string button);   // TODO: Obsolete?
+        bool isKeyDown(std::string key);        // TODO: Obsolete?
+
+        void processKeyInput();
+        void processMouseInput();
     protected:
         map<string,int> knownInputs;
         GLFWwindow * aWindowHandle;

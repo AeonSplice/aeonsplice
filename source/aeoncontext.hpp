@@ -29,6 +29,7 @@ namespace aeon
         virtual void openContext(Config * settings);
         virtual void closeContext();
 
+        virtual void processInput(int key, int scancode, int action, int mods);
         virtual void processExtensions(Config * settings);
         virtual void load()=0;
         virtual void execute();
@@ -41,6 +42,8 @@ namespace aeon
         State * aState;
         std::mutex aLock;
     };
+
+    static void vodoInput(GLFWwindow* window, int key, int scancode, int action, int mods);
 
     void apiInit();
     void apiTerminate();

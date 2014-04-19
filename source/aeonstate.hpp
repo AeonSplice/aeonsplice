@@ -22,7 +22,7 @@ namespace aeon
         virtual void executeFrame();
         virtual void changeState(State * newState);
 
-        virtual void processInput()=0;
+        virtual void processInput(int key, int scancode, int action, int mods)=0;
         virtual void update()=0;
         virtual void render()=0;
     protected:
