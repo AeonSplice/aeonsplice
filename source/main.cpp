@@ -190,6 +190,8 @@ bool init(int argc, char *argv[])
         log("Caught exception while initializing Glew.", AEON_ERROR);
     }
 
+    contextManager->setWindowPosition(100,100);
+
     return true;
 }
 

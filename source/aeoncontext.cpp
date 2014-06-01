@@ -6,17 +6,23 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <CEGUI/CEGUI.h>
+#include <CEGUI/RendererModules/OpenGL/GL3Renderer.h>
+
 #include "aeonconfig.hpp"
 #include "aeonstate.hpp"
 #include "aeoninput.hpp"
+#include "aeonlog.hpp"
 #include "aeonutil.hpp"
 
 using namespace std;
+using namespace CEGUI;
 
 namespace aeon
 {
     Context::~Context()
     {
+        terminateGUI();
         glfwDestroyWindow(aWindowHandle);
     }
     void Context::setContextHint(string target, string hint)
@@ -80,6 +86,11 @@ namespace aeon
         this->setContextHint(GLFW_CONTEXT_VERSION_MINOR, minor);
     }
 
+    void Context::setWindowPosition(int x, int y)
+    {
+        glfwSetWindowPos(aWindowHandle, x,y);
+    }
+
     void Context::processInput(int key, int scancode, int action, int mods)
     {
         aState->processInput(key, scancode, action, mods);
@@ -88,6 +99,18 @@ namespace aeon
     static void vodoInput(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
         Context * temp = static_cast<Context*>(glfwGetWindowUserPointer(window));
+        if(action == GLFW_PRESS)
+        {
+            aeon::log("Key Pressed: "+aeon::toString(key), AEON_INFO);
+        }
+        else if(action == GLFW_REPEAT)
+        {
+            aeon::log("Key Repeat: "+aeon::toString(key), AEON_INFO);
+        }
+        else if(action == GLFW_RELEASE)
+        {
+            aeon::log("Key Released: "+aeon::toString(key), AEON_INFO);
+        }
         temp->processInput(key, scancode, action, mods);
     }
 
@@ -125,6 +148,7 @@ namespace aeon
         int height =        initKeyPair(settings, "graphics", "height",     600);
         string title =      initKeyPair(settings, "graphics", "title",      compilersAreRetarded);
         aLock.lock();
+        aTitle = title;
         if(fullscreen)
         {
             GLFWmonitor* prim = glfwGetPrimaryMonitor();
@@ -165,6 +189,36 @@ namespace aeon
         glfwSetWindowShouldClose(aWindowHandle, GL_TRUE);
     }
 
+    void Context::initGUI()
+    {
+        OpenGL3Renderer& guiRenderer = OpenGL3Renderer::bootstrapSystem();
+        guiRenderer.enableExtraStateSettings(true);
+        // create (load) the TaharezLook scheme file
+        // (this auto-loads the TaharezLook looknfeel and imageset files)
+        aeon::log(aeon::getAeonDir());
+        // initialise the required dirs for the DefaultResourceProvider
+        DefaultResourceProvider* rp = static_cast<DefaultResourceProvider*>
+            (System::getSingleton().getResourceProvider());
+        rp->setResourceGroupDirectory("schemes", aeon::getAeonDir()+"schemes/");
+        rp->setResourceGroupDirectory("imagesets", aeon::getAeonDir()+"imagesets/");
+        rp->setResourceGroupDirectory("fonts", aeon::getAeonDir()+"fonts/");
+        rp->setResourceGroupDirectory("layouts", aeon::getAeonDir()+"layouts/");
+        rp->setResourceGroupDirectory("looknfeels", aeon::getAeonDir()+"looknfeel/");
+
+        // set the default resource groups to be used
+        ImageManager::setImagesetDefaultResourceGroup("imagesets");
+        Font::setDefaultResourceGroup("fonts");
+        Scheme::setDefaultResourceGroup("schemes");
+        WidgetLookManager::setDefaultResourceGroup("looknfeels");
+        WindowManager::setDefaultResourceGroup("layouts");
+        SchemeManager::getSingleton().createFromFile( "TaharezLook.scheme" );
+    }
+
+    void Context::terminateGUI()
+    {
+        return;
+    }
+
     void Context::processExtensions(Config * settings)
     {
         glewExperimental = true; // Needed for core profile
@@ -192,6 +246,23 @@ namespace aeon
         // FIXME: Memory leak (old state isn't destroyed)
         aState = newState;
         aLock.unlock();
+    }
+
+    void Context::updateFPSCounter()
+    {
+        static double previous_seconds = glfwGetTime();
+        static int frame_count;
+        double current_seconds = glfwGetTime();
+        double elapsed_seconds = current_seconds - previous_seconds;
+        if(elapsed_seconds > 0.25)
+        {
+            previous_seconds = current_seconds;
+            double fps = (double)frame_count / elapsed_seconds;
+            std::string temp = aTitle + " - FPS: " + toString(fps);
+            glfwSetWindowTitle(aWindowHandle, temp.c_str());
+            frame_count = 0;
+        }
+        frame_count++;
     }
 
     bool Context::shouldClose()

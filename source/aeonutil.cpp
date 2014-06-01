@@ -82,15 +82,23 @@ namespace aeon
 
     string toString(int number)
     {
-       stringstream ss;
-       ss << number;
-       return ss.str();
+        stringstream ss;
+        ss << number;
+        return ss.str();
     }
     string toString(unsigned int number)
     {
-       stringstream ss;
-       ss << number;
-       return ss.str();
+        stringstream ss;
+        ss << number;
+        return ss.str();
+    }
+    string toString(double number)
+    {
+        double number2 = number + 0.5;
+        int temp = (int)number2;
+        stringstream ss;
+        ss << temp;
+        return ss.str();
     }
     string toString(bool boolean)
     {

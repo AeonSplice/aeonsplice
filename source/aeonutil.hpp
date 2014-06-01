@@ -28,6 +28,7 @@ namespace aeon
 
     std::string toString(int number);
     std::string toString(unsigned int number);
+    std::string toString(double number);
     std::string toString(bool boolean);
     std::string toString(const char* str);
     std::string toString(std::vector<char> str);

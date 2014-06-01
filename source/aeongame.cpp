@@ -21,6 +21,7 @@
 #include <thread>
 
 using namespace std;
+using namespace CEGUI;
 
 namespace aeon
 {
@@ -53,13 +54,18 @@ namespace aeon
 
         // Load GUI
 
-        //OpenGL3Renderer& guiRenderer = OpenGL3Renderer::bootstrapSystem();
-        //guiRenderer.enableExtraStateSettings(true);
+        contextHandle->initGUI();
+
+        WindowManager& wmgr = WindowManager::getSingleton();
+
+        Window* myRoot = wmgr.loadLayoutFromFile( "test.layout" );
+        System::getSingleton().getDefaultGUIContext().setRootWindow(myRoot);
     }
     void TestState::loadGL()
     {
         // Dark blue background
-        glClearColor(0.0f, 0.5f, 0.8f, 0.0f);
+        //glClearColor(0.0f, 0.5f, 0.8f, 0.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
         glGenVertexArrays(1, &VertexArrayID);
         glBindVertexArray(VertexArrayID);
@@ -83,19 +89,40 @@ namespace aeon
              0.0f,  0.5f, 0.0f,
         };
 
+        const float colours[] =
+        {
+            1.0f, 0.0f,  0.0f,
+            0.0f, 1.0f,  0.0f,
+            0.0f, 0.0f,  1.0f
+        };
+
         glGenBuffers(1, &vertexbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+        glGenBuffers(1, &coloursVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, coloursVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(colours), colours, GL_STATIC_DRAW);
+
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+        glBindBuffer(GL_ARRAY_BUFFER, coloursVBO);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+        /*glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CCW);*/
     }
     void TestState::processInput(int key, int scancode, int action, int mods)
     {
-        if(key == GLFW_KEY_ESCAPE)
+        if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
             contextHandle->closeContext();
     }
     void TestState::update()
     {
         glfwPollEvents();
-        // Does nothing atm
+        contextHandle->updateFPSCounter();
     }
     void TestState::render()
     {
@@ -104,7 +131,7 @@ namespace aeon
         // Use our shader
         glUseProgram(programID);
 
-        // 1rst attribute buffer : vertices
+        /*// 1rst attribute buffer : vertices
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
         glVertexAttribPointer(
@@ -114,17 +141,23 @@ namespace aeon
             GL_FALSE,           // normalized?
             0,                  // stride
             (void*)0            // array buffer offset
-        );
+        );*/
+
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glBindVertexArray(vao);
 
         // Draw the triangle !
         glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
 
         glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
         //glEnable(GL_DEPTH_TEST);
         glUseProgram(0);
 
+
+        CEGUI::System::getSingleton().renderAllGUIContexts();
         glfwSwapBuffers(aWindowHandle);
-        //System::getSingleton().renderAllGUIContexts();
     }
 
     // TestContext

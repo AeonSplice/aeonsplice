@@ -40,6 +40,8 @@ namespace aeon
         GLuint vertexbuffer;
         GLuint VertexArrayID;
         GLuint programID;
+        GLuint coloursVBO;
+        GLuint vao;
     };
 
     // Overwrite default context, and make it load a state (TestState)
