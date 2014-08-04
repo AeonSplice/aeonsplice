@@ -95,6 +95,14 @@ namespace aeon
     {
         aState->processInput(key, scancode, action, mods);
     }
+    void Context::processChar(unsigned int codepoint)
+    {
+        aState->processChar(codepoint);
+    }
+    void Context::processButtons(int button, int action, int mods)
+    {
+        aState->processButtons(button, action, mods);
+    }
 
     static void vodoInput(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
@@ -112,6 +120,19 @@ namespace aeon
             aeon::log("Key Released: "+aeon::toString(key), AEON_INFO);
         }
         temp->processInput(key, scancode, action, mods);
+    }
+
+    static void vodoChar(GLFWwindow* window, unsigned int codepoint)
+    {
+        Context * temp = static_cast<Context*>(glfwGetWindowUserPointer(window));
+        aeon::log("Char: "+aeon::toString(codepoint), AEON_INFO);
+        temp->processChar(codepoint);
+    }
+
+    static void vodoButtons(GLFWwindow* window, int button, int action, int mods)
+    {
+        Context * temp = static_cast<Context*>(glfwGetWindowUserPointer(window));
+        temp->processButtons(button,action,mods);
     }
 
     void Context::openContext()
@@ -136,6 +157,8 @@ namespace aeon
             glfwMakeContextCurrent(aWindowHandle);
             glfwSetWindowUserPointer(aWindowHandle, this);
             glfwSetKeyCallback(aWindowHandle, vodoInput);
+            glfwSetCharCallback(aWindowHandle, vodoChar);
+            glfwSetMouseButtonCallback(aWindowHandle, vodoButtons);
             aLock.unlock();
             return;
         }
@@ -180,6 +203,8 @@ namespace aeon
             glfwMakeContextCurrent(aWindowHandle);
             glfwSetWindowUserPointer(aWindowHandle, this);
             glfwSetKeyCallback(aWindowHandle, vodoInput);
+            glfwSetCharCallback(aWindowHandle, vodoChar);
+            glfwSetMouseButtonCallback(aWindowHandle, vodoButtons);
             aLock.unlock();
         }
     }
@@ -192,10 +217,10 @@ namespace aeon
     void Context::initGUI()
     {
         OpenGL3Renderer& guiRenderer = OpenGL3Renderer::bootstrapSystem();
-        guiRenderer.enableExtraStateSettings(true);
+        //guiRenderer.enableExtraStateSettings(true);
         // create (load) the TaharezLook scheme file
         // (this auto-loads the TaharezLook looknfeel and imageset files)
-        aeon::log(aeon::getAeonDir());
+        //aeon::log(aeon::getAeonDir());
         // initialise the required dirs for the DefaultResourceProvider
         DefaultResourceProvider* rp = static_cast<DefaultResourceProvider*>
             (System::getSingleton().getResourceProvider());
@@ -212,6 +237,9 @@ namespace aeon
         WidgetLookManager::setDefaultResourceGroup("looknfeels");
         WindowManager::setDefaultResourceGroup("layouts");
         SchemeManager::getSingleton().createFromFile( "TaharezLook.scheme" );
+
+        //CEGUI::System::getSingleton().getDefaultGUIContext().setDefaultFont("DejaVuSans-10.font");
+        CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
     }
 
     void Context::terminateGUI()

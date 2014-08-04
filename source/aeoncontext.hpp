@@ -38,6 +38,8 @@ namespace aeon
         virtual void terminateGUI();
 
         virtual void processInput(int key, int scancode, int action, int mods);
+        virtual void processChar(unsigned int codepoint);
+        virtual void processButtons(int button, int action, int mods);
         virtual void processExtensions(Config * settings);
         virtual void load()=0;
         virtual void execute();
@@ -47,13 +49,13 @@ namespace aeon
 
         virtual bool shouldClose();
     protected:
-        GLFWwindow* aWindowHandle;
         Config * aSettings;
         State * aState;
         std::mutex aLock;
         std::string aTitle;
     public:
         CEGUI::Window* myRoot;
+        GLFWwindow* aWindowHandle;
     };
 
     //static void vodoInput(GLFWwindow* window, int key, int scancode, int action, int mods);

@@ -33,6 +33,8 @@ namespace aeon
         void loadGL();
 
         virtual void processInput(int key, int scancode, int action, int mods);
+        virtual void processChar(unsigned int codepoint);
+        virtual void processButtons(int button, int action, int mods);
         virtual void update();
         virtual void render();
     protected:

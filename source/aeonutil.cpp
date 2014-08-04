@@ -14,6 +14,12 @@
 
 #include "aeonlog.hpp"
 
+//#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
+#include <CEGUI/CEGUI.h>
+#include <CEGUI/RendererModules/OpenGL/GL3Renderer.h>
+
 using namespace std;
 
 namespace aeon
@@ -167,6 +173,88 @@ namespace aeon
                 log("AppData does not exist?", AEON_ERROR);
                 throw "404";
             }
+        }
+    }
+
+    CEGUI::Key::Scan glfwToCEGUIKey(int glfwKey)
+    {
+        switch(glfwKey)
+        {
+            case GLFW_KEY_UNKNOWN	: return CEGUI::Key::Unknown;
+            case GLFW_KEY_ESCAPE	: return CEGUI::Key::Escape;
+            case GLFW_KEY_A     : return CEGUI::Key::A;
+            case GLFW_KEY_B     : return CEGUI::Key::B;
+            case GLFW_KEY_C     : return CEGUI::Key::C;
+            case GLFW_KEY_D     : return CEGUI::Key::D;
+            case GLFW_KEY_E     : return CEGUI::Key::E;
+            case GLFW_KEY_F     : return CEGUI::Key::F;
+            case GLFW_KEY_G     : return CEGUI::Key::G;
+            case GLFW_KEY_H     : return CEGUI::Key::H;
+            case GLFW_KEY_I     : return CEGUI::Key::I;
+            case GLFW_KEY_J     : return CEGUI::Key::J;
+            case GLFW_KEY_K     : return CEGUI::Key::K;
+            case GLFW_KEY_L     : return CEGUI::Key::L;
+            case GLFW_KEY_M     : return CEGUI::Key::M;
+            case GLFW_KEY_N     : return CEGUI::Key::N;
+            case GLFW_KEY_O     : return CEGUI::Key::O;
+            case GLFW_KEY_P     : return CEGUI::Key::P;
+            case GLFW_KEY_Q     : return CEGUI::Key::Q;
+            case GLFW_KEY_R     : return CEGUI::Key::R;
+            case GLFW_KEY_S     : return CEGUI::Key::S;
+            case GLFW_KEY_T     : return CEGUI::Key::T;
+            case GLFW_KEY_U     : return CEGUI::Key::U;
+            case GLFW_KEY_V     : return CEGUI::Key::V;
+            case GLFW_KEY_W     : return CEGUI::Key::W;
+            case GLFW_KEY_X     : return CEGUI::Key::X;
+            case GLFW_KEY_Y     : return CEGUI::Key::Y;
+            case GLFW_KEY_Z     : return CEGUI::Key::Z;
+            case GLFW_KEY_F1	: return CEGUI::Key::F1;
+            case GLFW_KEY_F2	: return CEGUI::Key::F2;
+            case GLFW_KEY_F3	: return CEGUI::Key::F3;
+            case GLFW_KEY_F4	: return CEGUI::Key::F4;
+            case GLFW_KEY_F5	: return CEGUI::Key::F5;
+            case GLFW_KEY_F6	: return CEGUI::Key::F6;
+            case GLFW_KEY_F7	: return CEGUI::Key::F7;
+            case GLFW_KEY_F8	: return CEGUI::Key::F8;
+            case GLFW_KEY_F9	: return CEGUI::Key::F9;
+            case GLFW_KEY_F10       : return CEGUI::Key::F10;
+            case GLFW_KEY_F11       : return CEGUI::Key::F11;
+            case GLFW_KEY_F12       : return CEGUI::Key::F12;
+            case GLFW_KEY_F13       : return CEGUI::Key::F13;
+            case GLFW_KEY_F14       : return CEGUI::Key::F14;
+            case GLFW_KEY_F15       : return CEGUI::Key::F15;
+            case GLFW_KEY_UP        : return CEGUI::Key::ArrowUp;
+            case GLFW_KEY_DOWN      : return CEGUI::Key::ArrowDown;
+            case GLFW_KEY_LEFT      : return CEGUI::Key::ArrowLeft;
+            case GLFW_KEY_RIGHT     : return CEGUI::Key::ArrowRight;
+            case GLFW_KEY_LEFT_SHIFT    : return CEGUI::Key::LeftShift;
+            case GLFW_KEY_RIGHT_SHIFT    : return CEGUI::Key::RightShift;
+            case GLFW_KEY_LEFT_CONTROL     : return CEGUI::Key::LeftControl;
+            case GLFW_KEY_RIGHT_CONTROL     : return CEGUI::Key::RightControl;
+            case GLFW_KEY_LEFT_ALT      : return CEGUI::Key::LeftAlt;
+            case GLFW_KEY_RIGHT_ALT      : return CEGUI::Key::RightAlt;
+            case GLFW_KEY_TAB       : return CEGUI::Key::Tab;
+            case GLFW_KEY_ENTER     : return CEGUI::Key::Return;
+            case GLFW_KEY_BACKSPACE : return CEGUI::Key::Backspace;
+            case GLFW_KEY_INSERT    : return CEGUI::Key::Insert;
+            case GLFW_KEY_DELETE       : return CEGUI::Key::Delete;
+            case GLFW_KEY_PAGE_UP    : return CEGUI::Key::PageUp;
+            case GLFW_KEY_PAGE_DOWN  : return CEGUI::Key::PageDown;
+            case GLFW_KEY_HOME      : return CEGUI::Key::Home;
+            case GLFW_KEY_END       : return CEGUI::Key::End;
+            case GLFW_KEY_KP_ENTER	: return CEGUI::Key::NumpadEnter;
+            default			: return CEGUI::Key::Unknown;
+        }
+    }
+
+    CEGUI::MouseButton glfwToCEGUIButton(int glfwButton)
+    {
+        switch(glfwButton)
+        {
+            case GLFW_MOUSE_BUTTON_LEFT	: return CEGUI::LeftButton;
+            case GLFW_MOUSE_BUTTON_RIGHT	: return CEGUI::RightButton;
+            case GLFW_MOUSE_BUTTON_MIDDLE	: return CEGUI::MiddleButton;
+            default				: return CEGUI::NoButton;
         }
     }
 }

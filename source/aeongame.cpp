@@ -60,6 +60,8 @@ namespace aeon
 
         Window* myRoot = wmgr.loadLayoutFromFile( "test.layout" );
         System::getSingleton().getDefaultGUIContext().setRootWindow(myRoot);
+
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     }
     void TestState::loadGL()
     {
@@ -116,13 +118,57 @@ namespace aeon
     }
     void TestState::processInput(int key, int scancode, int action, int mods)
     {
+        CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
         if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
             contextHandle->closeContext();
+        else
+        {
+            if(action == GLFW_PRESS)
+            {
+                context.injectKeyDown(glfwToCEGUIKey(key));
+            }
+            else if(action == GLFW_RELEASE)
+            {
+                context.injectKeyUp(glfwToCEGUIKey(key));
+            }
+            else if(action == GLFW_REPEAT)
+            {
+                // TODO: Banana phone
+            }
+        }
+    }
+    void TestState::processChar(unsigned int codepoint)
+    {
+        CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
+        context.injectChar(codepoint);
+    }
+    void TestState::processButtons(int button, int action, int mods)
+    {
+        try{
+        CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
+        if(action == GLFW_PRESS)
+        {
+            context.injectMouseButtonDown(glfwToCEGUIButton(button));
+        }
+        else if(action == GLFW_RELEASE)
+        {
+            context.injectMouseButtonUp(glfwToCEGUIButton(button));
+        }
+        }
+        catch(...)
+        {
+            aeon::log("fml", AEON_ERROR);
+        }
     }
     void TestState::update()
     {
         glfwPollEvents();
         contextHandle->updateFPSCounter();
+        double x;
+        double y;
+        glfwGetCursorPos(contextHandle->aWindowHandle, &x, &y);
+        CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
+        context.injectMousePosition(x,y);
     }
     void TestState::render()
     {
@@ -155,8 +201,8 @@ namespace aeon
         //glEnable(GL_DEPTH_TEST);
         glUseProgram(0);
 
-
         CEGUI::System::getSingleton().renderAllGUIContexts();
+
         glfwSwapBuffers(aWindowHandle);
     }
 

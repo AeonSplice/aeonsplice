@@ -23,6 +23,8 @@ namespace aeon
         virtual void changeState(State * newState);
 
         virtual void processInput(int key, int scancode, int action, int mods)=0;
+        virtual void processChar(unsigned int codepoint)=0;
+        virtual void processButtons(int button, int action, int mods)=0;
         virtual void update()=0;
         virtual void render()=0;
     protected:

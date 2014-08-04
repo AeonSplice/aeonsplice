@@ -19,6 +19,9 @@
 #include <string>
 #include <vector>
 
+#include <CEGUI/CEGUI.h>
+#include <CEGUI/RendererModules/OpenGL/GL3Renderer.h>
+
 namespace aeon
 {
     std::string getUserDir();
@@ -40,5 +43,8 @@ namespace aeon
 
     // TODO: double getCurrentTimeMilli();
     const std::string currentDateTime();
+    CEGUI::Key::Scan glfwToCEGUIKey(int glfwKey);
+    CEGUI::MouseButton glfwToCEGUIButton(int glfwButton);
+
 }
 #endif // _AEONUTIL_
