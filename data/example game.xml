@@ -1,0 +1,52 @@
+<? xml version='1.0' encoding='us-ascii'?>
+<game>
+
+	<!-- Contains information about the match itself, and the players in it. -->
+	<meta>
+		<!--  Match ID identifies each battle, and is used in both the game file (this) and the SQL database. -->
+		<matchid>0</matchid>
+		<!--  Simply states the current match status, I.E. playing/concluded/paused/cancelled -->
+		<matchstatus>playing</matchstatus>
+		<!--  A List of each player in the match, and their related meta data. -->
+		<players>
+			<player id="0">
+				<username>player 1</username>
+				<team>1</team>
+				<status>playing</status>
+			</player>
+			<player id="133">
+				<username>athix</username>
+				<team>2</team>
+				<status>eliminated</status>
+			</player>
+			<player id="123772">
+				<username>athenian_general</username>
+				<team>3</team>
+				<status>playing</status>
+			</player>
+		</players>
+	</meta>
+	
+	<!--  Contains the information about the game for each turn in the match. Including all entity positions/orientations, and all player commands. -->
+	<turns>
+	
+		<turn>
+			<!--  Identifies the turn, and is automatically incremented. (x=0;x++) -->
+			<turnid>0</turnid>
+			<!--  Contains every entity currently on the game field and all meta data related to said entities. (Destroyed entities will be vacant from following turns' entities list.) -->
+			<entities>
+			</entities>
+			<!-- Contains the commands for processing the next turn. -->
+			<commands>
+			</commands>
+		</turn>
+		
+		<turn>
+			<turnid>1</turnid>
+			<entities>
+			</entities>
+		</turn>
+		
+	</turns>
+	
+</game>

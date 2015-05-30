@@ -41,11 +41,13 @@ namespace aeon
         virtual void processChar(unsigned int codepoint);
         virtual void processButtons(int button, int action, int mods);
         virtual void processExtensions(Config * settings);
+        virtual void processFocus(int action);
         virtual void load()=0;
         virtual void execute();
         virtual void changeState(State * newState);
 
         virtual void updateFPSCounter();
+        virtual std::string getSettingValue(std::string section, std::string key);
 
         virtual bool shouldClose();
     protected:

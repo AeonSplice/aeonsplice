@@ -33,6 +33,7 @@ namespace aeon
     {
         static bool overwritten = false;
         isDebug = initKeyPair(settings, "debug", "debugging", false);
+        initKeyPair(settings, "debug", "debugInput", false);
         overwriteLog = initKeyPair(settings, "debug", "overwriteLog", true);
         if(overwriteLog && !overwritten)
             overwriteLogFile();

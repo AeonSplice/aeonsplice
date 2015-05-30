@@ -16,38 +16,44 @@
 
 namespace aeon
 {
-    class TestInput : public InputHandler
+    /*class TestInput : public InputHandler
     {
     public:
         virtual void setInputSettings(Config * settings);
-    };
+    };*/
 
     // Overwrite default state, and make it render something useful. (a pretty triangle)
-    class TestState : public State
+    class LoginState : public State
     {
     public:
-        virtual ~TestState();
+        virtual ~LoginState();
 
         virtual void load(Config * settings, GLFWwindow* window, Context * context);
 
-        void loadGL();
+        // Utility functions
+        std::string getPasswordSalt();
+        bool loginToServer(std::string username, std::string password, bool remember);
 
-        virtual void processInput(int key, int scancode, int action, int mods);
-        virtual void processChar(unsigned int codepoint);
-        virtual void processButtons(int button, int action, int mods);
+        // The fifty billion event subscriber functions
+        bool login(const CEGUI::EventArgs &e);
+        bool exit(const CEGUI::EventArgs &e);
+        bool hideLoginFailure(const CEGUI::EventArgs &e);
+        bool usernameSubmitted(const CEGUI::EventArgs &e);
+        bool showRegister(const CEGUI::EventArgs &e);
+        bool hideRegister(const CEGUI::EventArgs &e);
+        bool showForgotPass(const CEGUI::EventArgs &e);
+        bool hideForgotPass(const CEGUI::EventArgs &e);
+
+        void registerHandlers();
+
         virtual void update();
         virtual void render();
     protected:
         InputHandler aInput;
-        GLuint vertexbuffer;
-        GLuint VertexArrayID;
-        GLuint programID;
-        GLuint coloursVBO;
-        GLuint vao;
     };
 
-    // Overwrite default context, and make it load a state (TestState)
-    class TestContext : public Context
+    // Overwrite default context, and make it load a state (LoginState)
+    class MainContext : public Context
     {
     public:
         virtual void load();

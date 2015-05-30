@@ -3,7 +3,6 @@
 
 #include "aeoncontext.hpp"
 #include "aeonconfig.hpp"
-#include "aeonshader.hpp"
 #include "aeoninput.hpp"
 #include "aeonlog.hpp"
 #include "aeonutil.hpp"
@@ -26,20 +25,20 @@ using namespace CEGUI;
 namespace aeon
 {
     // TestInput
-    void TestInput::setInputSettings(Config * settings)
+    /*void TestInput::setInputSettings(Config * settings)
     {
         setInput("CLOSE", initKeyPair(settings, "input", "CLOSE", GLFW_KEY_ESCAPE));
-    }
+    }*/
 
-    // TestState
-    TestState::~TestState()
+    // LoginState
+    LoginState::~LoginState()
     {
-        glDeleteBuffers(1, &vertexbuffer);
+        /*glDeleteBuffers(1, &vertexbuffer);
         glDeleteProgram(programID);
-        glDeleteVertexArrays(1, &VertexArrayID);
+        glDeleteVertexArrays(1, &VertexArrayID);*/
     }
 
-    void TestState::load(Config * settings, GLFWwindow* window, Context * context)
+    void LoginState::load(Config * settings, GLFWwindow* window, Context * context)
     {
         // TODO: InputHandler
         aSettings = settings;
@@ -50,117 +49,175 @@ namespace aeon
         aInput.setWindowHandle(aWindowHandle);
         aInput.setInputSettings(aSettings);
 
-        loadGL();
-
         // Load GUI
 
         contextHandle->initGUI();
 
         WindowManager& wmgr = WindowManager::getSingleton();
 
-        Window* myRoot = wmgr.loadLayoutFromFile( "test.layout" );
+        Window* myRoot = wmgr.loadLayoutFromFile( "login.layout" );
         System::getSingleton().getDefaultGUIContext().setRootWindow(myRoot);
+
+        registerHandlers();
 
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     }
-    void TestState::loadGL()
+    void LoginState::registerHandlers()
     {
-        // Dark blue background
-        //glClearColor(0.0f, 0.5f, 0.8f, 0.0f);
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
-        glGenVertexArrays(1, &VertexArrayID);
-        glBindVertexArray(VertexArrayID);
-
-        // Default shaders
-        string vShader = "#version 330 core\n\n// Input vertex data, different for all executions of this shader.\nlayout(location = 0) in vec3 vertexPosition_modelspace;\n\nvoid main(){\n\n    gl_Position.xyz = vertexPosition_modelspace;\n    gl_Position.w = 1.0;\n\n}\n\n";
-        string fShader = "#version 330 core\n\n// Ouput data\nout vec3 color;\n\nvoid main()\n{\n\n	// Output color = red \n	color = vec3(1,0,0);\n\n}\n";
-
-        // Create and compile our GLSL program from the shaders
-        programID = initProgram( "vert.glsl", "frag.glsl", vShader, fShader );
-
-        if(programID == 0)
+        try
         {
-            // NOTE: I'm pretty sure this is dangerous atm, but the program shouldn't fail to load anyway.
-            throw "Failed to load program for TestState";
-        }
-
-        const GLfloat g_vertex_buffer_data[] = {
-            -0.5f, -0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-             0.0f,  0.5f, 0.0f,
-        };
-
-        const float colours[] =
-        {
-            1.0f, 0.0f,  0.0f,
-            0.0f, 1.0f,  0.0f,
-            0.0f, 0.0f,  1.0f
-        };
-
-        glGenBuffers(1, &vertexbuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-        glGenBuffers(1, &coloursVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, coloursVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(colours), colours, GL_STATIC_DRAW);
-
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-        glBindBuffer(GL_ARRAY_BUFFER, coloursVBO);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-        /*glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-        glFrontFace(GL_CCW);*/
-    }
-    void TestState::processInput(int key, int scancode, int action, int mods)
-    {
-        CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
-        if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-            contextHandle->closeContext();
-        else
-        {
-            if(action == GLFW_PRESS)
-            {
-                context.injectKeyDown(glfwToCEGUIKey(key));
-            }
-            else if(action == GLFW_RELEASE)
-            {
-                context.injectKeyUp(glfwToCEGUIKey(key));
-            }
-            else if(action == GLFW_REPEAT)
-            {
-                // TODO: Banana phone
-            }
-        }
-    }
-    void TestState::processChar(unsigned int codepoint)
-    {
-        CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
-        context.injectChar(codepoint);
-    }
-    void TestState::processButtons(int button, int action, int mods)
-    {
-        try{
-        CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
-        if(action == GLFW_PRESS)
-        {
-            context.injectMouseButtonDown(glfwToCEGUIButton(button));
-        }
-        else if(action == GLFW_RELEASE)
-        {
-            context.injectMouseButtonUp(glfwToCEGUIButton(button));
-        }
+            CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
+            CEGUI::Window * rootWindow = context.getRootWindow();
+            rootWindow->getChild("Login/Username")->subscribeEvent(
+                                            CEGUI::Editbox::EventTextAccepted,
+                                            CEGUI::Event::Subscriber(&LoginState::usernameSubmitted, this));
+            rootWindow->getChild("Login/Password")->subscribeEvent(
+                                            CEGUI::Editbox::EventTextAccepted,
+                                            CEGUI::Event::Subscriber(&LoginState::login, this));
+            rootWindow->getChild("Login/Login")->subscribeEvent(
+                                            CEGUI::PushButton::EventMouseClick,
+                                            CEGUI::Event::Subscriber(&LoginState::login, this));
+            rootWindow->getChild("Login/Exit")->subscribeEvent(
+                                            CEGUI::PushButton::EventMouseClick,
+                                            CEGUI::Event::Subscriber(&LoginState::exit, this));
+            rootWindow->getChild("ConnectionFailure/Exit")->subscribeEvent(
+                                            CEGUI::PushButton::EventMouseClick,
+                                            CEGUI::Event::Subscriber(&LoginState::exit, this));
+            rootWindow->getChild("Login/Register")->subscribeEvent(
+                                            CEGUI::PushButton::EventMouseClick,
+                                            CEGUI::Event::Subscriber(&LoginState::showRegister, this));
+            rootWindow->getChild("Login/ForgotPass")->subscribeEvent(
+                                            CEGUI::PushButton::EventMouseClick,
+                                            CEGUI::Event::Subscriber(&LoginState::showForgotPass, this));
+            rootWindow->getChild("Register/Cancel")->subscribeEvent(
+                                            CEGUI::PushButton::EventMouseClick,
+                                            CEGUI::Event::Subscriber(&LoginState::hideRegister, this));
+            rootWindow->getChild("SendPass/Cancel")->subscribeEvent(
+                                            CEGUI::PushButton::EventMouseClick,
+                                            CEGUI::Event::Subscriber(&LoginState::hideForgotPass, this));
+            rootWindow->getChild("LoginFailure/Close")->subscribeEvent(
+                                            CEGUI::PushButton::EventMouseClick,
+                                            CEGUI::Event::Subscriber(&LoginState::hideLoginFailure, this));
         }
         catch(...)
         {
-            aeon::log("fml", AEON_ERROR);
+            log("Failed to register actions.", AEON_ERROR);
+        }
+
+    }
+    bool LoginState::usernameSubmitted(const CEGUI::EventArgs &e)
+    {
+        CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
+        CEGUI::Window * rootWindow = context.getRootWindow();
+        rootWindow->getChild("Login/Password")->activate();
+    }
+    // Removed for now
+    /*bool LoginState::TextSubmitted(const CEGUI::EventArgs &e)
+    {
+        CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
+        CEGUI::Window * rootWindow = context.getRootWindow();
+        CEGUI::String msg = rootWindow->getChild("Console/Chatbox")->getText();
+        (this)->TextRecieved(msg);
+        rootWindow->getChild("Console/Chatbox")->setText("");
+        return true;
+    }
+    void LoginState::TextRecieved(CEGUI::String input)
+    {
+        CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
+        CEGUI::Window * rootWindow = context.getRootWindow();
+        CEGUI::Listbox *outputWindow = static_cast<CEGUI::Listbox*>(rootWindow->getChild("Console/History"));
+        CEGUI::ListboxItem* newItem = 0;
+        newItem = new CEGUI::ListboxTextItem(input);
+        outputWindow->addItem(newItem);
+    }*/
+    bool LoginState::loginToServer(std::string username, std::string password, bool remember)
+    {
+        // Get Salt
+        // Hash Password
+        // Send username and hash (and request for session cookie if remember pass enabled)
+        // Results
+        if(username == "guest" && password == "password")
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
-    void TestState::update()
+    bool LoginState::login(const CEGUI::EventArgs &e)
+    {
+        CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
+        CEGUI::Window * rootWindow = context.getRootWindow();
+        string username = rootWindow->getChild("Login/Username")->getText().c_str();
+        string password = rootWindow->getChild("Login/Password")->getText().c_str();
+        CEGUI::ToggleButton * rememberpassbox = static_cast<CEGUI::ToggleButton*>(rootWindow->getChild("Login/RememberPass"));
+        bool rememberuser = rememberpassbox->isSelected();
+        log("User: "+username+"| Pass: "+password+"| Remember: "+toString(rememberuser), AEON_INFO);
+        if(loginToServer(username,password,rememberuser))
+        {
+            log("Logged in.", AEON_INFO);
+        }
+        else
+        {
+            log("Failed to log in.", AEON_INFO);
+            CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
+            CEGUI::Window * rootWindow = context.getRootWindow();
+            rootWindow->getChild("Login")->setDisabled(true);
+            rootWindow->getChild("LoginFailure")->setVisible(true);
+            rootWindow->getChild("Login/Password")->deactivate();
+            rootWindow->getChild("Login/Username")->setText("");
+            rootWindow->getChild("Login/Password")->setText("");
+        }
+        return true;
+    }
+    bool LoginState::exit(const CEGUI::EventArgs &e)
+    {
+        contextHandle->closeContext();
+        return true;
+    }
+    bool LoginState::hideLoginFailure(const CEGUI::EventArgs &e)
+    {
+        CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
+        CEGUI::Window * rootWindow = context.getRootWindow();
+        rootWindow->getChild("Login")->setDisabled(false);
+        rootWindow->getChild("LoginFailure")->setVisible(false);
+    }
+    bool LoginState::showRegister(const CEGUI::EventArgs &e)
+    {
+        CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
+        CEGUI::Window * rootWindow = context.getRootWindow();
+        rootWindow->getChild("Login")->setDisabled(true);
+        rootWindow->getChild("Register")->setVisible(true);
+        rootWindow->getChild("Register/Username")->activate();
+        return true;
+    }
+    bool LoginState::hideRegister(const CEGUI::EventArgs &e)
+    {
+        CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
+        CEGUI::Window * rootWindow = context.getRootWindow();
+        rootWindow->getChild("Login")->setDisabled(false);
+        rootWindow->getChild("Register")->setVisible(false);
+        return true;
+    }
+    bool LoginState::showForgotPass(const CEGUI::EventArgs &e)
+    {
+        CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
+        CEGUI::Window * rootWindow = context.getRootWindow();
+        rootWindow->getChild("Login")->setDisabled(true);
+        rootWindow->getChild("SendPass")->setVisible(true);
+        rootWindow->getChild("SendPass/Email")->activate();
+        return true;
+    }
+    bool LoginState::hideForgotPass(const CEGUI::EventArgs &e)
+    {
+        CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
+        CEGUI::Window * rootWindow = context.getRootWindow();
+        rootWindow->getChild("Login")->setDisabled(false);
+        rootWindow->getChild("SendPass")->setVisible(false);
+        return true;
+    }
+    void LoginState::update()
     {
         glfwPollEvents();
         contextHandle->updateFPSCounter();
@@ -170,47 +227,18 @@ namespace aeon
         CEGUI::GUIContext& context = CEGUI::System::getSingleton().getDefaultGUIContext();
         context.injectMousePosition(x,y);
     }
-    void TestState::render()
+    void LoginState::render()
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        //glDisable(GL_DEPTH_TEST);
-        // Use our shader
-        glUseProgram(programID);
-
-        /*// 1rst attribute buffer : vertices
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glVertexAttribPointer(
-            0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-            3,                  // size
-            GL_FLOAT,           // type
-            GL_FALSE,           // normalized?
-            0,                  // stride
-            (void*)0            // array buffer offset
-        );*/
-
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glBindVertexArray(vao);
-
-        // Draw the triangle !
-        glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
-
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        //glEnable(GL_DEPTH_TEST);
-        glUseProgram(0);
-
         CEGUI::System::getSingleton().renderAllGUIContexts();
-
         glfwSwapBuffers(aWindowHandle);
     }
 
-    // TestContext
-    void TestContext::load()
+    // MainContext
+    void MainContext::load()
     {
         aLock.lock();
-        aState = new TestState;
+        aState = new LoginState;
         aState->load(aSettings,aWindowHandle,this);
         aLock.unlock();
     }

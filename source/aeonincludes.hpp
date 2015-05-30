@@ -14,6 +14,7 @@
 #include "aeoncontext.hpp"
 #include "aeonlog.hpp"
 #include "aeonutil.hpp"
+#include "aeonnetwork.hpp"
 #include "aeongame.hpp"
 
 #endif // _AEONINCLUDES_

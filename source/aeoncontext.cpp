@@ -103,29 +103,20 @@ namespace aeon
     {
         aState->processButtons(button, action, mods);
     }
+    void Context::processFocus(int action)
+    {
+        aState->processFocus(action);
+    }
 
     static void vodoInput(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
         Context * temp = static_cast<Context*>(glfwGetWindowUserPointer(window));
-        if(action == GLFW_PRESS)
-        {
-            aeon::log("Key Pressed: "+aeon::toString(key), AEON_INFO);
-        }
-        else if(action == GLFW_REPEAT)
-        {
-            aeon::log("Key Repeat: "+aeon::toString(key), AEON_INFO);
-        }
-        else if(action == GLFW_RELEASE)
-        {
-            aeon::log("Key Released: "+aeon::toString(key), AEON_INFO);
-        }
         temp->processInput(key, scancode, action, mods);
     }
 
     static void vodoChar(GLFWwindow* window, unsigned int codepoint)
     {
         Context * temp = static_cast<Context*>(glfwGetWindowUserPointer(window));
-        aeon::log("Char: "+aeon::toString(codepoint), AEON_INFO);
         temp->processChar(codepoint);
     }
 
@@ -133,6 +124,12 @@ namespace aeon
     {
         Context * temp = static_cast<Context*>(glfwGetWindowUserPointer(window));
         temp->processButtons(button,action,mods);
+    }
+
+    static void vodoFocus(GLFWwindow* window, int action)
+    {
+        Context * temp = static_cast<Context*>(glfwGetWindowUserPointer(window));
+        temp->processFocus(action);
     }
 
     void Context::openContext()
@@ -159,6 +156,8 @@ namespace aeon
             glfwSetKeyCallback(aWindowHandle, vodoInput);
             glfwSetCharCallback(aWindowHandle, vodoChar);
             glfwSetMouseButtonCallback(aWindowHandle, vodoButtons);
+            glfwSetWindowFocusCallback(aWindowHandle, vodoFocus);
+            glfwSetCursorEnterCallback(aWindowHandle, vodoFocus);
             aLock.unlock();
             return;
         }
@@ -205,6 +204,8 @@ namespace aeon
             glfwSetKeyCallback(aWindowHandle, vodoInput);
             glfwSetCharCallback(aWindowHandle, vodoChar);
             glfwSetMouseButtonCallback(aWindowHandle, vodoButtons);
+            glfwSetWindowFocusCallback(aWindowHandle, vodoFocus);
+            glfwSetCursorEnterCallback(aWindowHandle, vodoFocus);
             aLock.unlock();
         }
     }
@@ -224,11 +225,20 @@ namespace aeon
         // initialise the required dirs for the DefaultResourceProvider
         DefaultResourceProvider* rp = static_cast<DefaultResourceProvider*>
             (System::getSingleton().getResourceProvider());
-        rp->setResourceGroupDirectory("schemes", aeon::getAeonDir()+"schemes/");
-        rp->setResourceGroupDirectory("imagesets", aeon::getAeonDir()+"imagesets/");
-        rp->setResourceGroupDirectory("fonts", aeon::getAeonDir()+"fonts/");
-        rp->setResourceGroupDirectory("layouts", aeon::getAeonDir()+"layouts/");
-        rp->setResourceGroupDirectory("looknfeels", aeon::getAeonDir()+"looknfeel/");
+        //std::string dirToUse = aeon::getAeonDir();
+        // NOTE: Hacks...because lazy
+        #ifdef _DESKTOP_
+        std::string dirToUse = "D:\\Data\\Code\\Repos\\Aeon\\data\\";
+        #else
+        std::string dirToUse = "C:\\Users\\Josh\\My Code\\Repos\\Aeon\\data\\";
+        #endif
+        rp->setResourceGroupDirectory("schemes", dirToUse+"schemes/");
+        rp->setResourceGroupDirectory("imagesets", dirToUse+"imagesets/");
+        rp->setResourceGroupDirectory("fonts", dirToUse+"fonts/");
+        rp->setResourceGroupDirectory("layouts", dirToUse+"layouts/");
+        rp->setResourceGroupDirectory("looknfeels", dirToUse+"looknfeel/");
+
+        // TODO: Make resource loading use configuration
 
         // set the default resource groups to be used
         ImageManager::setImagesetDefaultResourceGroup("imagesets");
@@ -236,10 +246,15 @@ namespace aeon
         Scheme::setDefaultResourceGroup("schemes");
         WidgetLookManager::setDefaultResourceGroup("looknfeels");
         WindowManager::setDefaultResourceGroup("layouts");
+
+        // Load any resources you'll be needing here.
         SchemeManager::getSingleton().createFromFile( "TaharezLook.scheme" );
+        SchemeManager::getSingleton().createFromFile( "VanillaSkin.scheme" );
+        SchemeManager::getSingleton().createFromFile( "WindowsLook.scheme" );
+        FontManager::getSingleton().createFromFile("Jura-10.font");
 
         //CEGUI::System::getSingleton().getDefaultGUIContext().setDefaultFont("DejaVuSans-10.font");
-        CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
+        CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("WindowsLook/MouseArrow");
     }
 
     void Context::terminateGUI()
@@ -291,6 +306,11 @@ namespace aeon
             frame_count = 0;
         }
         frame_count++;
+    }
+
+    string Context::getSettingValue(string section, string key)
+    {
+        return aSettings->getValue(section,key);
     }
 
     bool Context::shouldClose()

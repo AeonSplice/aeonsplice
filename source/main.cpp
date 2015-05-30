@@ -1,4 +1,6 @@
 #include "aeonincludes.hpp"
+/*#include <boost/asio.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>*/
 using namespace std;
 using namespace aeon;
 
@@ -26,6 +28,18 @@ int main(int argc, char *argv[])
         }
         log("Loading assets...", AEON_INFO);
         load();
+        log("Testing network...", AEON_INFO);
+        try
+        {
+            /*boost::asio::io_service io;
+            boost::asio::deadline_timer t(io, boost::posix_time::seconds(5));
+            t.wait();*/
+            log("I think it worked.", AEON_INFO);
+        }
+        catch(...)
+        {
+            log("Well...shit.", AEON_ERROR);
+        }
         log("Running...", AEON_INFO);
         start();
         log("Cleaning up...", AEON_INFO);
@@ -52,7 +66,7 @@ void load()
 
 bool init(int argc, char *argv[])
 {
-    contextManager = new TestContext();
+    contextManager = new MainContext();
 
     try
     {
@@ -150,7 +164,7 @@ bool init(int argc, char *argv[])
     // NOTE: Sets log settings again, to account for arguments like -debug
     getLogSettings(mainConfig);
 
-    // Initialize underlying graphics and audio engines. (GLFW, glew, Ogre3d, that kind of thing)
+    // Initialize underlying graphics and audio engines. (GLFW, glew, CEGUI, that kind of thing)
     try
     {
         apiInit();
@@ -190,7 +204,7 @@ bool init(int argc, char *argv[])
         log("Caught exception while initializing Glew.", AEON_ERROR);
     }
 
-    contextManager->setWindowPosition(100,100);
+    contextManager->setWindowPosition(50,50);
 
     return true;
 }

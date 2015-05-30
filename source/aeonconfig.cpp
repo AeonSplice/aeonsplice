@@ -409,10 +409,9 @@ namespace aeon
     {
         if(settings->exists(section,key))
         {
-            string value = settings->getValue(section,key);
             try
             {
-                bool output = toBoolean(value);
+                bool output = toBoolean(settings->getValue(section,key));
                 return output;
             }
             catch(...)

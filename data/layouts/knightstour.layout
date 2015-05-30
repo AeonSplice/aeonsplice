@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout version="4" >
+    <Window type="DefaultWindow" name="Container" >
+        <Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        <Window type="Vanilla/FrameWindow" name="NewTour" >
+            <Property name="Area" value="{{0,155},{0,77},{0.3,155},{0.3,193}}" />
+            <Property name="Text" value="New Knight&apos;s Tour" />
+            <Property name="RollUpEnabled" value="false" />
+            <Property name="AutoRenderingSurface" value="true" />
+            <AutoWindow namePath="__auto_titlebar__" >
+                <Property name="NonClient" value="true" />
+                <Property name="AlwaysOnTop" value="false" />
+            </AutoWindow>
+            <AutoWindow namePath="__auto_closebutton__" >
+                <Property name="NonClient" value="true" />
+                <Property name="AlwaysOnTop" value="true" />
+                <Property name="WantsMultiClickEvents" value="false" />
+            </AutoWindow>
+            <Window type="Vanilla/Editbox" name="BoardWidth" >
+                <Property name="Area" value="{{0,46},{0,57},{0,135},{0,89}}" />
+            </Window>
+            <Window type="Vanilla/Editbox" name="BoardHeight" >
+                <Property name="Area" value="{{0,233},{0,57},{0,316},{0,89}}" />
+            </Window>
+            <Window type="Vanilla/Label" name="Label" >
+                <Property name="Area" value="{{0,228},{0,99},{0,356},{0,131}}" />
+                <Property name="Text" value="Board Width" />
+                <Property name="MaxSize" value="{{1,0},{1,0}}" />
+            </Window>
+            <Window type="Vanilla/Label" name="Label2" >
+                <Property name="Area" value="{{0,230},{0,5},{0,358},{0,37}}" />
+                <Property name="Text" value="Board Height" />
+                <Property name="MaxSize" value="{{1,0},{1,0}}" />
+            </Window>
+            <Window type="Vanilla/Label" name="Label3" >
+                <Property name="Area" value="{{0,105},{0,131},{0,233},{0,163}}" />
+                <Property name="Text" value="Starting X Position" />
+                <Property name="MaxSize" value="{{1,0},{1,0}}" />
+            </Window>
+            <Window type="Vanilla/Label" name="Label4" >
+                <Property name="Area" value="{{0,121},{0,6},{0,249},{0,38}}" />
+                <Property name="Text" value="Starting Y Position" />
+                <Property name="MaxSize" value="{{1,0},{1,0}}" />
+            </Window>
+            <Window type="Vanilla/Checkbox" name="Checkbox" >
+                <Property name="Area" value="{{0,6},{0,99},{0,134},{0,131}}" />
+                <Property name="Text" value="Save Results?" />
+            </Window>
+            <Window type="Vanilla/Button" name="Button" >
+                <Property name="Area" value="{{0,24},{0,195},{0,120},{0,227}}" />
+                <Property name="Text" value="Start Tour" />
+                <Property name="WantsMultiClickEvents" value="false" />
+            </Window>
+            <Window type="Vanilla/Button" name="Button2" >
+                <Property name="Area" value="{{0,240},{0,202},{0,336},{0,234}}" />
+                <Property name="Text" value="Exit" />
+                <Property name="WantsMultiClickEvents" value="false" />
+            </Window>
+            <Window type="DefaultWindow" name="DefaultWindow" >
+                <Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
+                <Property name="MaxSize" value="{{1,0},{1,0}}" />
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>
