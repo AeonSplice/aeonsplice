@@ -6,7 +6,7 @@ however you like, just don't steal my logo or name please!
 
 MIT License
 
-Copyright (c) 2016 Josh Buker
+Copyright (c) 2013-2016 Josh Buker
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
